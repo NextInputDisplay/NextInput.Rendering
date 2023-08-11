@@ -8,6 +8,16 @@ public static class Renderer
 {
     public static RenderWindow Window;
     
+    public static Texture[] Textures;
+    public static void LoadTextures(params string[] filenames)
+    {
+        Textures = new Texture[filenames.Length];
+        for (int i = 0; i < filenames.Length; i++)
+        {
+            Textures[i] = new Texture(filenames[i]);
+        }
+    }
+    
     public static void Init(WindowProperties options)
     {
         var mode = new VideoMode((uint)options.Size.X, (uint)options.Size.Y);

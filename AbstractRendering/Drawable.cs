@@ -16,11 +16,12 @@ public abstract class Drawable
 }
 
 
-public struct ShapeProperties
+public class ShapeProperties
 {
-    public Color Color;
-    public Color OutlineColor;
-    public float OutlineWidth;
+    public Color Color = Color.Black;
+    public Color OutlineColor = Color.Black;
+    public float OutlineWidth = 0f;
+    public int TextureId = -1;
 }
 
 public abstract class Shape : Drawable

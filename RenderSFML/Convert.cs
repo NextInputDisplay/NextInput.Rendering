@@ -7,7 +7,6 @@ public static class Convert
 {
     public static SFML.Graphics.Color Color(AbstractRendering.Color color)
     {
-        if (color == null) color = AbstractRendering.Color.Black;
         byte r = (byte)(color.R * 255f);
         byte g = (byte)(color.G * 255f);
         byte b = (byte)(color.B * 255f);

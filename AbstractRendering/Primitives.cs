@@ -5,6 +5,14 @@ public class Color
     public float R, G, B;
     public float A = 1f;
 
+    public Color(float v, float a = 1f)
+    {
+        R = v;
+        G = v;
+        B = v;
+        A = a;
+    }
+
     public Color (float r, float g, float b, float a = 1f)
     {
         R = r;
@@ -13,11 +21,12 @@ public class Color
         A = a;
     }
 
-    public static Color Black = new (0f, 0f, 0f);
+    public static Color Black = new (0f);
+    public static Color DarkGrey = new (0.2f);
     public static Color Red = new (1f, 0f, 0f);
     public static Color Green = new (0f, 1f, 0f);
     public static Color Blue = new (0f, 0f, 1f);
-    public static Color White = new (1f,1f,1f);
+    public static Color White = new (1f);
 }
 
 public class Vec2

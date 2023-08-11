@@ -1,6 +1,5 @@
 using AbstractRendering;
 using SFML.Graphics;
-using SFML.System;
 using ConvexShape = AbstractRendering.ConvexShape;
 using Drawable = AbstractRendering.Drawable;
 using Shape = SFML.Graphics.Shape;
@@ -20,9 +19,19 @@ public static class Implementation
     
     public static void ApplyProperties(Shape shape, ShapeProperties properties)
     {
-        shape.FillColor = Convert.Color(properties.Color);
+        if (properties.TextureId == -1)
+        {
+            shape.FillColor = Convert.Color(properties.Color);
+        }
+        else
+        {
+            shape.Texture = Renderer.Textures[properties.TextureId];
+            //shape.TextureRect = new IntRect(0, 0, 303, 188);
+        }
+        
         shape.OutlineColor = Convert.Color(properties.OutlineColor);
         shape.OutlineThickness = properties.OutlineWidth;
+
     }
 
 }

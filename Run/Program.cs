@@ -16,11 +16,12 @@ public class Program
 
         Renderer.Init(properties);
         
+        Renderer.LoadTextures("test.png");
         
         Scene scene = new Scene();
         
-        scene.Add(new Circle((200,200),50),
-            new ShapeProperties {Color = Color.Red}
+        scene.Add(new Circle((100,100),100),
+            new ShapeProperties {TextureId = 0, OutlineColor = Color.White, OutlineWidth = 2}
         );
         scene.Add(new Rectangle((400,200),(450,300)),
             new ShapeProperties {Color = Color.Green}
@@ -29,7 +30,7 @@ public class Program
             new ShapeProperties {Color = Color.Blue}
         );
         scene.Add(new Polygon((300,300),50,8),
-            new ShapeProperties {Color = Color.Black, OutlineColor = Color.White, OutlineWidth = 2f}
+            new ShapeProperties {Color = Color.DarkGrey, OutlineColor = Color.White, OutlineWidth = 2f}
         );
 
         while (Renderer.Window.IsOpen)
