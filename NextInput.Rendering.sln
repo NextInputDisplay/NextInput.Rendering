@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbstractRendering", "AbstractRendering\AbstractRendering.csproj", "{C9C9BF61-C86B-4331-A6DD-081311F6C1F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderSFML", "RenderSFML\RenderSFML.csproj", "{0ED24020-FB07-4947-9589-603B42946985}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Run", "Run\Run.csproj", "{6FA8ED74-7C27-4F01-9A99-0913F43CE68A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C9C9BF61-C86B-4331-A6DD-081311F6C1F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9C9BF61-C86B-4331-A6DD-081311F6C1F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9C9BF61-C86B-4331-A6DD-081311F6C1F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9C9BF61-C86B-4331-A6DD-081311F6C1F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0ED24020-FB07-4947-9589-603B42946985}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ED24020-FB07-4947-9589-603B42946985}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ED24020-FB07-4947-9589-603B42946985}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ED24020-FB07-4947-9589-603B42946985}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FA8ED74-7C27-4F01-9A99-0913F43CE68A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FA8ED74-7C27-4F01-9A99-0913F43CE68A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FA8ED74-7C27-4F01-9A99-0913F43CE68A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FA8ED74-7C27-4F01-9A99-0913F43CE68A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
