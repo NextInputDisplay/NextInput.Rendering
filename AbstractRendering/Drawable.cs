@@ -2,7 +2,12 @@
 
 public abstract class RenderImplementation
 {
-    public virtual void Draw(Drawable drawable) { throw new NotImplementedException(); }
+    public abstract void Draw(Drawable drawable);
+}
+
+public class EmptyImplementation : RenderImplementation
+{
+    public override void Draw(Drawable drawable) { throw new NotImplementedException(); }
 }
 
 public abstract class Drawable
@@ -10,39 +15,87 @@ public abstract class Drawable
     public abstract void Draw();
 }
 
+
+public struct ShapeProperties
+{
+    public Color Color;
+    public Color OutlineColor;
+    public float OutlineWidth;
+}
+
 public abstract class Shape : Drawable
 {
-    public Color Color = Color.Black;
+    public ShapeProperties Properties;
 }
 
 public class Circle : Shape
 {
-    public float X, Y, Radius;
+    public Vec2 Pos;
+    public float Radius;
 
-    public Circle(float x, float y, float radius, Color color)
+    public Circle(Vec2 pos, float radius)
     {
-        X = x; Y = y; Radius = radius;
-        Color = color;
+        Pos = pos; Radius = radius;
     }
     
-    public override string ToString() => "{"+X+","+Y+","+Radius+"}";
+    public override string ToString() => Pos+","+Radius;
 
-    public static RenderImplementation? Implementation = null;
-    public override void Draw() => Implementation?.Draw(this);
+    public static RenderImplementation Implementation = new EmptyImplementation();
+    public override void Draw() => Implementation.Draw(this);
 }
 
 public class Rectangle : Shape
 {
-    public float X1, Y1, X2, Y2;
+    public Vec2 P1,P2;
 
-    public Rectangle(float x1, float y1, float x2, float y2, Color color)
+    public Rectangle(Vec2 p1, Vec2 p2)
     {
-        X1 = x1; Y1 = y1; X2 = x2; Y2 = y2;
-        Color = color;
+        P1 = p1; P2 = p2;
     }
 
-    public override string ToString() => "{"+X1+","+Y1+","+X2+","+Y2+"}";
+    public override string ToString() => P1+","+P2;
     
-    public static RenderImplementation? Implementation = null;
-    public override void Draw() => Implementation?.Draw(this);
+    public static RenderImplementation Implementation = new EmptyImplementation();
+    public override void Draw() => Implementation.Draw(this);
+}
+
+public class ConvexShape : Shape
+{
+    public Vec2[] Verts;
+
+    public ConvexShape(Vec2[] verts)
+    {
+        Verts = verts;
+    }
+
+    public override string ToString()
+    {
+        string str = "{";
+        for (int i = 0; i < Verts.Length-1; i++)
+        {
+            str += Verts[i] + ",";
+        }
+
+        return str + Verts[^1] + "}";
+    }
+    
+    public static RenderImplementation Implementation = new EmptyImplementation();
+    public override void Draw() => Implementation.Draw(this);
+}
+
+public class Polygon : Shape
+{
+    public Vec2 Pos;
+    public float Radius;
+    public int NumSides;
+
+    public Polygon(Vec2 pos, float radius, int numSides)
+    {
+        Pos = pos; Radius = radius; NumSides = numSides;
+    }
+
+    public override string ToString() => Pos+","+Radius+","+NumSides;
+
+    public static RenderImplementation Implementation = new EmptyImplementation();
+    public override void Draw() => Implementation.Draw(this);
 }

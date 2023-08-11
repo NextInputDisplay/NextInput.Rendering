@@ -26,5 +26,12 @@ public class Scene
         _renderList.Add(layer,drawable);
     }
 
+    public void Add(Drawable drawable, ShapeProperties properties, int layer = Int32.MaxValue)
+    {
+        Shape shape = (Shape)drawable;
+        shape.Properties = properties;
+        Add(shape,layer);
+    }
+
     public IList<Drawable> ToRender => _renderList.Values;
 }

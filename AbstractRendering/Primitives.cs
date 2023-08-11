@@ -23,5 +23,12 @@ public class Color
 public class Vec2
 {
     public float X, Y;
-    public Vec2(float x, float y){X = x;Y = y;}
+    public Vec2(float x, float y) { X = x; Y = y; }
+
+    public override string ToString() => "{" + X + "," + Y + "}";
+
+    public static implicit operator Vec2((float,float) vec) => new (vec.Item1, vec.Item2);
+
+    public static Vec2 operator -(Vec2 a, Vec2 b) => new Vec2(a.X - b.X, a.Y - b.Y);
+
 }

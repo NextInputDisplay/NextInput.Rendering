@@ -1,65 +1,8 @@
 ﻿using AbstractRendering;
 using SFML.Graphics;
-using SFML.System;
 using SFML.Window;
-using Drawable = AbstractRendering.Drawable;
 
 namespace RenderSFML;
-
-public static class Convert
-{
-    public static SFML.Graphics.Color Color(AbstractRendering.Color color)
-    {
-        byte r = (byte)(color.R * 255f);
-        byte g = (byte)(color.G * 255f);
-        byte b = (byte)(color.B * 255f);
-        byte a = (byte)(color.A * 255f);
-        
-        return new SFML.Graphics.Color(r,g,b,a);
-    }
-}
-
-public class RenderCircle : RenderImplementation
-{
-    private static CircleShape _shape = new();
-    public override void Draw(Drawable drawable)
-    {
-        Circle circle = (Circle)drawable;
-
-        _shape.Position = new Vector2f(circle.X, circle.Y);
-        _shape.Radius = circle.Radius;
-        _shape.FillColor = Convert.Color(circle.Color);
-        
-        Renderer.Window.Draw(_shape);
-    }
-}
-
-public class RenderRect : RenderImplementation
-{
-    private static RectangleShape _shape = new();
-    public override void Draw(Drawable drawable)
-    {
-        Rectangle rect = (Rectangle)drawable;
-
-        _shape.Position = new Vector2f(rect.X1, rect.Y1);
-        _shape.Size = new Vector2f(rect.X2-rect.X1, rect.Y2-rect.Y1);
-        _shape.FillColor = Convert.Color(rect.Color);
-        
-        Renderer.Window.Draw(_shape);
-    }
-}
-
-
-
-public static class Implementation
-{
-    public static void Init()
-    {
-        Circle.Implementation = new RenderCircle();
-        Rectangle.Implementation = new RenderRect();
-    }
-}
-
 
 public static class Renderer
 {
