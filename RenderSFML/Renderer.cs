@@ -1,5 +1,6 @@
 ﻿using AbstractRendering;
 using SFML.Graphics;
+using SFML.System;
 using SFML.Window;
 
 namespace RenderSFML;
@@ -7,7 +8,6 @@ namespace RenderSFML;
 public static class Renderer
 {
     public static RenderWindow Window;
-    
     public static Texture[] Textures;
     public static void LoadTextures(params string[] filenames)
     {
@@ -33,7 +33,7 @@ public static class Renderer
 
         Implementation.Init();
     }
-
+    
     public static void Update(Scene scene)
     {
         // Process events
@@ -45,7 +45,6 @@ public static class Renderer
         {
             drawable.Draw();
         }
-
 
         // Finally, display the rendered frame on screen
         Window.Display();

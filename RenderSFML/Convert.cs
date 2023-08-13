@@ -5,11 +5,13 @@ namespace RenderSFML;
 
 public static class Convert
 {
-    public static SFML.Graphics.Color Color(AbstractRendering.Color color)
+    public static SFML.Graphics.Color Color(Color color)
     {
-        byte r = (byte)(color.R * 255f);
-        byte g = (byte)(color.G * 255f);
-        byte b = (byte)(color.B * 255f);
+        var (cr,cg,cb) = color.GetRgb();        
+        
+        byte r = (byte)(cr * 255f);
+        byte g = (byte)(cg * 255f);
+        byte b = (byte)(cb * 255f);
         byte a = (byte)(color.A * 255f);
         
         return new SFML.Graphics.Color(r,g,b,a);

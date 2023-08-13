@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderSFML", "RenderSFML\Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Run", "Run\Run.csproj", "{6FA8ED74-7C27-4F01-9A99-0913F43CE68A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputSFML", "InputSFML\InputSFML.csproj", "{2DB75A69-3ACE-4B0C-9689-1420974850F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{6FA8ED74-7C27-4F01-9A99-0913F43CE68A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FA8ED74-7C27-4F01-9A99-0913F43CE68A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FA8ED74-7C27-4F01-9A99-0913F43CE68A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DB75A69-3ACE-4B0C-9689-1420974850F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DB75A69-3ACE-4B0C-9689-1420974850F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DB75A69-3ACE-4B0C-9689-1420974850F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DB75A69-3ACE-4B0C-9689-1420974850F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

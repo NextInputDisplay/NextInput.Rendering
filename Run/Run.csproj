@@ -9,6 +9,7 @@
     
     <ItemGroup>
         <ProjectReference Include="..\RenderSFML\RenderSFML.csproj" />
+        <ProjectReference Include="..\InputSFML\InputSFML.csproj" />
         <ProjectReference Include="..\AbstractRendering\AbstractRendering.csproj" />
     </ItemGroup>
     

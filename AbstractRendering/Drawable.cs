@@ -20,7 +20,7 @@ public class ShapeProperties
 {
     public Color Color = Color.Black;
     public Color OutlineColor = Color.Black;
-    public float OutlineWidth = 0f;
+    public Property OutlineWidth = 0f;
     public int TextureId = -1;
 }
 
@@ -32,7 +32,7 @@ public abstract class Shape : Drawable
 public class Circle : Shape
 {
     public Vec2 Pos;
-    public float Radius;
+    public Property Radius;
 
     public Circle(Vec2 pos, float radius)
     {
@@ -87,8 +87,8 @@ public class ConvexShape : Shape
 public class Polygon : Shape
 {
     public Vec2 Pos;
-    public float Radius;
-    public int NumSides;
+    public Property Radius;
+    public Property NumSides;
 
     public Polygon(Vec2 pos, float radius, int numSides)
     {
