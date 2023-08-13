@@ -1,5 +1,6 @@
 using AbstractRendering;
 using SFML.Graphics;
+using SFML.System;
 using ConvexShape = AbstractRendering.ConvexShape;
 using Drawable = AbstractRendering.Drawable;
 using Shape = SFML.Graphics.Shape;
@@ -31,7 +32,7 @@ public static class Implementation
         
         shape.OutlineColor = Convert.Color(properties.OutlineColor);
         shape.OutlineThickness = properties.OutlineWidth;
-
+        shape.Rotation = properties.Rotation;
     }
 
 }
@@ -45,6 +46,8 @@ public class RenderCircle : RenderImplementation
 
         _shape.Position = Convert.Vec2(circle.Pos);
         _shape.Radius = circle.Radius;
+
+        _shape.Origin = new Vector2f(circle.Radius, circle.Radius);
 
         Implementation.ApplyProperties(_shape, circle.Properties);
         

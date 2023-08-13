@@ -9,7 +9,8 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Animator animator = new Animator(Input.GetRightTrigger);
+        Animator rightTrigger = new Animator(Input.GetRightTrigger);
+        Animator buttonAnimator = new Animator(Input.GetButton);
         
         
         WindowProperties properties = new WindowProperties()
@@ -24,6 +25,7 @@ public class Program
         
         Scene scene = new Scene();
         
+        #region Circle
         Circle lunaCircle = new Circle((100,100),100);
         ShapeProperties lunaCircleProperties = new ShapeProperties { TextureId = 0, OutlineColor = Color.Red, OutlineWidth = 10 };
         scene.Add(lunaCircle,lunaCircleProperties);
@@ -34,9 +36,18 @@ public class Program
         KeyFrameHandler lunaCircleOutlineWidth = new KeyFrameHandler(ref lunaCircleProperties.OutlineWidth);
         lunaCircleOutlineWidth.Add(0f,5f);
         lunaCircleOutlineWidth.Add(1f,100f);
+        KeyFrameHandler lunaCircleMovementX= new KeyFrameHandler(ref lunaCircle.Pos.X);
+        lunaCircleMovementX.Add(0f,100f);
+        lunaCircleMovementX.Add(1f,500f);
+        KeyFrameHandler lunaCircleRotation = new KeyFrameHandler(ref lunaCircleProperties.Rotation);
+        lunaCircleRotation.Add(0f,0f);
+        lunaCircleRotation.Add(1f,360f);
         
-        animator.Add(lunaCircleOutlineColour);
-        animator.Add(lunaCircleOutlineWidth);
+        rightTrigger.Add(lunaCircleOutlineColour);
+        rightTrigger.Add(lunaCircleOutlineWidth);
+        rightTrigger.Add(lunaCircleMovementX);
+        rightTrigger.Add(lunaCircleRotation);
+        #endregion
         
         scene.Add(new Rectangle((400,200),(450,300)),
             new ShapeProperties {Color = Color.Green}
@@ -44,13 +55,23 @@ public class Program
         scene.Add(new ConvexShape(new Vec2[]{(300,250),(250,300),(350,300)}),
             new ShapeProperties {Color = Color.Blue}
         );
-        scene.Add(new Polygon((300,300),50,8),
+
+        var polygon = new Polygon((300, 300), 50, 8);
+        
+        KeyFrameHandler polygonNumSides = new KeyFrameHandler(ref polygon.NumSides);
+        polygonNumSides.Add(0f,6);
+        polygonNumSides.Add(1f,8);
+        
+        buttonAnimator.Add(polygonNumSides);
+        
+        scene.Add(polygon,
             new ShapeProperties {Color = Color.Red}
         );
 
         while (Renderer.Window.IsOpen)
         {
-            animator.Update();
+            rightTrigger.Update();
+            buttonAnimator.Update();
             Renderer.Update(scene);
         }
 

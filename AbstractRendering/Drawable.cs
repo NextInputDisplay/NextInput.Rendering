@@ -21,6 +21,7 @@ public class ShapeProperties
     public Color Color = Color.Black;
     public Color OutlineColor = Color.Black;
     public Property OutlineWidth = 0f;
+    public Property Rotation = 0f;
     public int TextureId = -1;
 }
 
