@@ -16,6 +16,26 @@ public abstract class Drawable
 }
 
 
+public class Line : Drawable
+{
+    public Vec2 Start, End;
+    public float Width;
+    public Color Color = Color.Black;
+
+    public Line(Vec2 start, Vec2 end, float width = 1f)
+    {
+        Start = start;
+        End = end;
+        Width = width;
+    }
+    
+    public override string ToString() => Start+","+End;
+
+    public static RenderImplementation Implementation = new EmptyImplementation();
+    public override void Draw() => Implementation.Draw(this);
+}
+
+
 public class ShapeProperties
 {
     public Color Color = Color.Black;

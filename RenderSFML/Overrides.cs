@@ -12,6 +12,7 @@ public static class Implementation
 {
     public static void Init()
     {
+        Line.Implementation = new RenderLine();
         Circle.Implementation = new RenderCircle();
         Rectangle.Implementation = new RenderRect();
         ConvexShape.Implementation = new RenderConvexShape();
@@ -35,6 +36,38 @@ public static class Implementation
         shape.Rotation = properties.Rotation;
     }
 
+}
+
+public class RenderLine : RenderImplementation
+{
+    public override void Draw(Drawable drawable)
+    {
+        Line line = (Line)drawable;
+
+        float radius = line.Width / 2f;
+        CircleShape circle = new CircleShape(radius);
+        circle.FillColor = Convert.Color(line.Color);
+
+        Vec2 radiusOffset = new Vec2(radius, radius);
+        
+        circle.Position = Convert.Vec2(line.Start - radiusOffset);
+        Renderer.Window.Draw(circle);
+        circle.Position = Convert.Vec2(line.End - radiusOffset);
+        Renderer.Window.Draw(circle);
+
+        Vec2 difference = line.End - line.Start;
+        Vec2 offset = new Vec2(difference.Y, -difference.X).Normalized * radius;
+        
+        var convexShape = new SFML.Graphics.ConvexShape();
+        convexShape.SetPointCount(4);
+        convexShape.SetPoint(0,Convert.Vec2(line.Start+offset));
+        convexShape.SetPoint(1,Convert.Vec2(line.Start-offset));
+        convexShape.SetPoint(2,Convert.Vec2(line.End-offset));
+        convexShape.SetPoint(3,Convert.Vec2(line.End+offset));
+        convexShape.FillColor = circle.FillColor;
+        
+        Renderer.Window.Draw(convexShape);
+    }
 }
 
 public class RenderCircle : RenderImplementation

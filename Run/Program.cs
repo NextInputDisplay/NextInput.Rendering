@@ -10,6 +10,8 @@ public class Program
     public static void Main(string[] args)
     {
         Animator rightTrigger = new Animator(Input.GetRightTrigger);
+        Animator leftStickX = new Animator(Input.GetAdjustedLeftStickX);
+        Animator leftStickY = new Animator(Input.GetAdjustedLeftStickY);
         Animator buttonAnimator = new Animator(Input.GetButton);
         
         
@@ -55,6 +57,20 @@ public class Program
         scene.Add(new ConvexShape(new Vec2[]{(300,250),(250,300),(350,300)}),
             new ShapeProperties {Color = Color.Blue}
         );
+        Line line = new Line((700, 500), (700, 500), 5);
+        line.Color = Color.White;
+
+        var lineEndX = new KeyFrameHandler(ref line.End.X);
+        lineEndX.Add(0f,600f);
+        lineEndX.Add(1f,800f);
+        leftStickX.Add(lineEndX);
+        
+        var lineEndY = new KeyFrameHandler(ref line.End.Y);
+        lineEndY.Add(0f,400f);
+        lineEndY.Add(1f,600f);
+        leftStickY.Add(lineEndY);
+        
+        scene.Add(line);
 
         var polygon = new Polygon((300, 300), 50, 8);
         
@@ -64,6 +80,7 @@ public class Program
         
         buttonAnimator.Add(polygonNumSides);
         
+        
         scene.Add(polygon,
             new ShapeProperties {Color = Color.Red}
         );
@@ -72,6 +89,8 @@ public class Program
         {
             rightTrigger.Update();
             buttonAnimator.Update();
+            leftStickX.Update();
+            leftStickY.Update();
             Renderer.Update(scene);
         }
 

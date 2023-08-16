@@ -110,5 +110,13 @@ public class Vec2
     public static implicit operator Vec2((float,float) vec) => new (vec.Item1, vec.Item2);
 
     public static Vec2 operator -(Vec2 a, Vec2 b) => new (a.X - b.X, a.Y - b.Y);
+    public static Vec2 operator +(Vec2 a, Vec2 b) => new (a.X + b.X, a.Y + b.Y);
+    public static Vec2 operator /(Vec2 a, float b) => new (a.X / b, a.Y / b);
+    public static Vec2 operator *(Vec2 a, float b) => new (a.X * b, a.Y * b);
+
+    public float Length => MathF.Sqrt(X * X + Y * Y);
+
+    public Vec2 Normalized => this / Length;
+
 
 }
