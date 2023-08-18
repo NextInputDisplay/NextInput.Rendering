@@ -96,7 +96,7 @@ public class Color
     public static Color DarkGrey => new (0.2f);
     public static Color Red => new (0f, 1f, 1f);
     public static Color Green => new (120f, 1f, 1f);
-    public static Color Blue => new (240f, 0f, 1f);
+    public static Color Blue => new (240f, 1f, 1f);
     public static Color White => new (1f);
 }
 
