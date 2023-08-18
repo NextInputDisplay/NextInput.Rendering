@@ -16,7 +16,7 @@ public class Program
         Animator buttonAnimatorA = new Animator(Input.GetButtonA);
         
         Scene scene = new Scene();
-        scene.Values = new float[100];
+        scene.Values = new float[40];
         
         WindowProperties properties = new WindowProperties()
         {
@@ -79,36 +79,37 @@ public class Program
         scene.Add(line);
         */
         
-        var polygon = new Polygon((350, 350), 50, 8);
-        scene.Set3V(polygon.ColorRef,Color.Red);
-        scene.Add(polygon);
+        var polygon = new Polygon(); scene.Add(polygon);
+        
+        scene.Set2V(polygon.PosRef,(350,350));
+        scene.SetV(polygon.RadiusRef,50f);
+        scene.Set4V(polygon.ColorRef,Color.Red);
         
         KeyFrameHandler polygonNumSides = new KeyFrameHandler(polygon.NumSidesRef);
         polygonNumSides.Add(0f,6);
         polygonNumSides.Add(1f,8);
         
-        buttonAnimatorB.Add(polygonNumSides);
         
         
+        var pooText = new Text("poo",0, true); scene.Add(pooText);
+        
+        scene.Set2V(pooText.PosRef,(350,350));
+        scene.Set4V(pooText.ColorRef,Color.White);
+        scene.SetV(pooText.CharacterSizeRef,40f);
 
-
-        /*
-        var pooText = new Text("poo",new Vec2(350,350),0);
-        pooText.Color = Color.White;
-        pooText.CharacterSize = 40f;
-        pooText.Centered = true;
-        scene.Add(pooText);
-
-        KeyFrameHandler pooTextAlpha= new KeyFrameHandler(ref pooText.Color.A);
+        KeyFrameHandler pooTextAlpha= new KeyFrameHandler(pooText.ColorRef+3);
         pooTextAlpha.Add(0f, 0f);
         pooTextAlpha.Add(1f, 1f);
         
+        
+        
+        buttonAnimatorB.Add(polygonNumSides);
         buttonAnimatorA.Add(pooTextAlpha);
-        */
+   
 
         while (Renderer.Window.IsOpen)
         {
-
+            buttonAnimatorA.Update();
             buttonAnimatorB.Update();
 
             Renderer.Update();

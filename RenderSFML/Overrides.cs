@@ -25,7 +25,7 @@ public static class Implementation
     {
         if (shape.TextureId == -1)
         {
-            sfmlShape.FillColor = Convert.Color(Renderer.Scene.Get3V(shape.ColorRef));
+            sfmlShape.FillColor = Convert.Color(Renderer.Scene.Get4V(shape.ColorRef));
         }
         else
         {
@@ -33,7 +33,7 @@ public static class Implementation
             //shape.TextureRect = new IntRect(0, 0, 303, 188);
         }
         
-        sfmlShape.OutlineColor = Convert.Color(Renderer.Scene.Get3V(shape.OutlineColorRef));
+        sfmlShape.OutlineColor = Convert.Color(Renderer.Scene.Get4V(shape.OutlineColorRef));
         sfmlShape.OutlineThickness = Renderer.Scene.GetV(shape.OutlineWidthRef);
         sfmlShape.Rotation = Renderer.Scene.GetV(shape.RotationRef);
     }
@@ -48,7 +48,7 @@ public class RenderLine : RenderImplementation
 
         float radius = Renderer.Scene.GetV(line.WidthRef) / 2f;
         CircleShape circle = new CircleShape(radius);
-        circle.FillColor = Convert.Color(Renderer.Scene.Get3V(line.ColorRef));
+        circle.FillColor = Convert.Color(Renderer.Scene.Get4V(line.ColorRef));
 
         Vec2 radiusOffset = new Vec2(radius, radius);
 
@@ -83,8 +83,8 @@ public class RenderText : RenderImplementation
 
         Text sfmlText = new Text(text.Message, Renderer.Fonts[text.FontId]);
         sfmlText.OutlineThickness = Renderer.Scene.GetV(text.OutlineWidthRef);
-        sfmlText.OutlineColor = Convert.Color(Renderer.Scene.Get3V(text.OutlineColorRef));
-        sfmlText.FillColor = Convert.Color(Renderer.Scene.Get3V(text.ColorRef));
+        sfmlText.OutlineColor = Convert.Color(Renderer.Scene.Get4V(text.OutlineColorRef));
+        sfmlText.FillColor = Convert.Color(Renderer.Scene.Get4V(text.ColorRef));
         sfmlText.CharacterSize = (uint)Renderer.Scene.GetV(text.CharacterSizeRef);
         sfmlText.Position = Convert.Vec2(Renderer.Scene.Get2V(text.PosRef));
 

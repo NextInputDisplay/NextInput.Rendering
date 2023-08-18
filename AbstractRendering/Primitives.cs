@@ -91,8 +91,8 @@ public class Color
         };
     }
 
-    public static implicit operator Color((float h, float s, float v) c) => new(c.h, c.s, c.v);
-    public static implicit operator (float,float,float)(Color c) => (c.H, c.S, c.V);
+    public static implicit operator Color((float h, float s, float v, float a) c) => new(c.h, c.s, c.v, c.a);
+    public static implicit operator (float,float,float,float)(Color c) => (c.H, c.S, c.V, c.A);
 
     public static Color Black  => new(0f);
     public static Color DarkGrey => new (0.2f);

@@ -19,18 +19,19 @@ public class Scene
     public float[] Values;
     public float GetV(int id) => Values[id];
     public (float,float) Get2V(int id) => (Values[id],Values[id + 1]);
-    public (float,float,float) Get3V(int id) => (Values[id],Values[id + 1],Values[id + 2]);
+    public (float,float,float,float) Get4V(int id) => (Values[id],Values[id + 1],Values[id + 2],Values[id+3]);
     public void SetV(int id,float v) => Values[id] = v;
     public void Set2V(int id, (float x, float y) v)
     {
         Values[id] = v.x;
         Values[id + 1] = v.y;
     }
-    public void Set3V(int id, (float x, float y, float z) v)
+    public void Set4V(int id, (float x, float y, float z, float w) v)
     {
         Values[id] = v.x;
         Values[id + 1] = v.y;
         Values[id + 2] = v.z;
+        Values[id + 3] = v.w;
     }
     
     

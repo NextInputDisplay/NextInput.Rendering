@@ -27,7 +27,7 @@ public class Line : Drawable
 {
     public Line(Vec2 start, Vec2 end, float width = 1f)
     {
-        PointerSize = 8;
+        PointerSize = 9;
         
         Current.Scene.Set2V(StartRef,start);
         Current.Scene.Set2V(EndRef,end);
@@ -36,7 +36,7 @@ public class Line : Drawable
     
     // Properties:
     // start,  end,  width,  color
-    // (0,1), (2,3),  (4),  (5,6,7)
+    // (0,1), (2,3),  (4),  (5,6,7,8)
     
     public int StartRef => StartPointer + 0;
     public int EndRef => StartPointer + 2;
@@ -54,27 +54,27 @@ public class Text : Drawable
 {
     public string Message;
     public int FontId;
-    public bool Centered = false;
+    public bool Centered;
 
     
-    public Text(string message, Vec2 pos, int fontId)
+    public Text(string message, int fontId, bool centered = false)
     {
-        PointerSize = 10;
+        PointerSize = 12;
         
         Message = message;
-        Current.Scene.Set2V(PosRef,pos);
         FontId = fontId;
+        Centered = centered;
     }
     
     // Properties:
-    //  pos,  size, width, color, out-color
-    // (0,1), (2),  (3),  (4,5,6)  (7,8,9)
+    //  pos,  size, width, color,  out-color
+    // (0,1), (2),  (3), (4,5,6,7)  (8,9,10,11)
     
     public int PosRef => StartPointer + 0;
     public int CharacterSizeRef => StartPointer + 2;
     public int OutlineWidthRef => StartPointer + 3;
     public int ColorRef => StartPointer + 4;
-    public int OutlineColorRef => StartPointer + 7;
+    public int OutlineColorRef => StartPointer + 8;
     
     public override string ToString() => Message;
     
@@ -85,13 +85,13 @@ public class Text : Drawable
 public abstract class Shape : Drawable
 {
     // Properties:
-    //  rotation, width, color, out-color
-    //    (0),     (1), (2,3,4), (5,6,7)
+    //  rotation, width,  color,  out-color
+    //    (0),     (1), (2,3,4,5), (6,7,8,9)
 
     public int RotationRef => StartPointer + 0;
     public int OutlineWidthRef => StartPointer + 1;
     public int ColorRef => StartPointer + 2;
-    public int OutlineColorRef => StartPointer + 5;
+    public int OutlineColorRef => StartPointer + 6;
     
     public int TextureId = -1;
 }
@@ -100,17 +100,14 @@ public class Circle : Shape
 {
     // Properties:
     //  shape,   pos,   radius
-    //  (0..7), (8,9),  (10)
+    //  (0..9), (10,11),  (12)
 
-    public int PosRef => StartPointer + 8;
-    public int RadiusRef => StartPointer + 10;
+    public int PosRef => StartPointer + 10;
+    public int RadiusRef => StartPointer + 12;
 
-    public Circle(Vec2 pos, float radius)
+    public Circle()
     {
-        PointerSize = 11;
-        
-        Current.Scene.Set2V(PosRef,pos);
-        Current.Scene.SetV(RadiusRef,radius);
+        PointerSize = 13;
     }
     
     public override string ToString() => ((Vec2)Current.Scene.Get2V(PosRef))+","+Current.Scene.GetV(RadiusRef);
@@ -123,17 +120,14 @@ public class Rectangle : Shape
 {
     // Properties:
     //  shape,    p1,     p2
-    //  (0..7), (8,9), (10,11)
+    //  (0..9), (10,11), (12,13)
     
-    public int P1Ref => StartPointer + 8;
-    public int P2Ref => StartPointer + 10;
+    public int P1Ref => StartPointer + 10;
+    public int P2Ref => StartPointer + 12;
 
-    public Rectangle(Vec2 p1, Vec2 p2)
+    public Rectangle()
     {
-        PointerSize = 12;
-
-        Current.Scene.Set2V(P1Ref,p1);
-        Current.Scene.Set2V(P2Ref,p2);
+        PointerSize = 14;
     }
 
     public override string ToString() => ((Vec2)Current.Scene.Get2V(P1Ref))+","+((Vec2)Current.Scene.Get2V(P2Ref));
@@ -172,20 +166,16 @@ public class ConvexShape : Shape
 public class Polygon : Shape
 {
     // Properties:
-    //  shape,   pos, radius, sides
-    //  (0..7), (8,9), (10),  (11)
+    //  shape,   pos,   radius, sides
+    //  (0..9), (10,11), (12),  (13)
 
-    public int PosRef => StartPointer + 8;
-    public int RadiusRef => StartPointer + 10;
-    public int NumSidesRef => StartPointer + 11;
+    public int PosRef => StartPointer + 10;
+    public int RadiusRef => StartPointer + 12;
+    public int NumSidesRef => StartPointer + 13;
 
-    public Polygon(Vec2 pos, float radius, int numSides)
+    public Polygon()
     {
-        PointerSize = 12;
-        
-        Current.Scene.Set2V(PosRef,pos);
-        Current.Scene.SetV(RadiusRef,radius);
-        Current.Scene.SetV(NumSidesRef,numSides);
+        PointerSize = 14;
     }
 
     public override string ToString() => ((Vec2)Current.Scene.Get2V(PosRef))+","+Current.Scene.GetV(RadiusRef)+","+Current.Scene.GetV(NumSidesRef);
