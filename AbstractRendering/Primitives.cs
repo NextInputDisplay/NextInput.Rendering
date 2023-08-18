@@ -2,8 +2,8 @@
 
 public class Color
 {
-    public Property H,S,V;
-    public Property A = 1f;
+    public float H,S,V;
+    public float A = 1f;
 
     public Color(float v, float a = 1f)
     {
@@ -91,6 +91,8 @@ public class Color
         };
     }
 
+    public static implicit operator Color((float h, float s, float v) c) => new(c.h, c.s, c.v);
+    public static implicit operator (float,float,float)(Color c) => (c.H, c.S, c.V);
 
     public static Color Black  => new(0f);
     public static Color DarkGrey => new (0.2f);
@@ -102,12 +104,13 @@ public class Color
 
 public class Vec2
 {
-    public Property X, Y;
+    public float X, Y;
     public Vec2(float x, float y) { X = x; Y = y; }
 
     public override string ToString() => "{" + X + "," + Y + "}";
 
     public static implicit operator Vec2((float,float) vec) => new (vec.Item1, vec.Item2);
+    public static implicit operator (float,float)(Vec2 vec) => (vec.X, vec.Y);
 
     public static Vec2 operator -(Vec2 a, Vec2 b) => new (a.X - b.X, a.Y - b.Y);
     public static Vec2 operator +(Vec2 a, Vec2 b) => new (a.X + b.X, a.Y + b.Y);

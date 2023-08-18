@@ -15,6 +15,8 @@ public class Program
         Animator buttonAnimatorB = new Animator(Input.GetButtonB);
         Animator buttonAnimatorA = new Animator(Input.GetButtonA);
         
+        Scene scene = new Scene();
+        scene.Values = new float[100];
         
         WindowProperties properties = new WindowProperties()
         {
@@ -22,13 +24,15 @@ public class Program
             Title = "Refrag loves the balls"
         };
 
-        Renderer.Init(properties);
+        Renderer.Init(scene,properties);
         
         Renderer.LoadTextures("test.png");
         Renderer.LoadFonts("AgaveNerdFont-Regular.ttf");
         
-        Scene scene = new Scene();
         
+
+        
+        /*
         #region Circle
         Circle lunaCircle = new Circle((100,100),100);
         ShapeProperties lunaCircleProperties = new ShapeProperties { TextureId = 0, OutlineColor = Color.Red, OutlineWidth = 10 };
@@ -73,20 +77,22 @@ public class Program
         leftStickY.Add(lineEndY);
         
         scene.Add(line);
-
-        var polygon = new Polygon((350, 350), 50, 8);
+        */
         
-        KeyFrameHandler polygonNumSides = new KeyFrameHandler(ref polygon.NumSides);
+        var polygon = new Polygon((350, 350), 50, 8);
+        scene.Set3V(polygon.ColorRef,Color.Red);
+        scene.Add(polygon);
+        
+        KeyFrameHandler polygonNumSides = new KeyFrameHandler(polygon.NumSidesRef);
         polygonNumSides.Add(0f,6);
         polygonNumSides.Add(1f,8);
         
         buttonAnimatorB.Add(polygonNumSides);
         
         
-        scene.Add(polygon,
-            new ShapeProperties {Color = Color.Red}
-        );
 
+
+        /*
         var pooText = new Text("poo",new Vec2(350,350),0);
         pooText.Color = Color.White;
         pooText.CharacterSize = 40f;
@@ -98,16 +104,14 @@ public class Program
         pooTextAlpha.Add(1f, 1f);
         
         buttonAnimatorA.Add(pooTextAlpha);
-        
+        */
 
         while (Renderer.Window.IsOpen)
         {
-            rightTrigger.Update();
+
             buttonAnimatorB.Update();
-            buttonAnimatorA.Update();
-            leftStickX.Update();
-            leftStickY.Update();
-            Renderer.Update(scene);
+
+            Renderer.Update();
         }
 
     }

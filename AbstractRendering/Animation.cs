@@ -46,12 +46,12 @@ public class KeyFrame
 public class KeyFrameHandler
 {
     private List<KeyFrame> _keyFrames;
-    private Property _property;
+    private int _propertyPointer;
 
-    public KeyFrameHandler(ref Property property)
+    public KeyFrameHandler(int propertyPointer)
     {
         _keyFrames = new List<KeyFrame>();
-        _property = property;
+        _propertyPointer = propertyPointer;
     }
     
     public void Add(float time, float value) => _keyFrames.Add(new KeyFrame(time,value));
@@ -86,6 +86,6 @@ public class KeyFrameHandler
     public void Update(float time)
     {
         var (index, lerp) = GetLerp(time);
-        _property.Value = _keyFrames[index].Value * (1f - lerp) + _keyFrames[index + 1].Value * lerp;
+        Current.Scene.Values[_propertyPointer] = _keyFrames[index].Value * (1f - lerp) + _keyFrames[index + 1].Value * lerp;
     }
 }

@@ -10,6 +10,7 @@ public static class Renderer
     public static RenderWindow Window;
     public static Texture[] Textures;
     public static Font[] Fonts;
+    public static Scene Scene;
     
     public static void LoadTextures(params string[] filenames)
     {
@@ -29,8 +30,9 @@ public static class Renderer
         }
     }
     
-    public static void Init(WindowProperties options)
+    public static void Init(Scene scene, WindowProperties options)
     {
+        Scene = scene;
         var mode = new VideoMode((uint)options.Size.X, (uint)options.Size.Y);
         var settings = new ContextSettings{ AntialiasingLevel = 8 };
         Window = new RenderWindow(mode, options.Title, Styles.Default, settings);
@@ -45,14 +47,14 @@ public static class Renderer
         Implementation.Init();
     }
     
-    public static void Update(Scene scene)
+    public static void Update()
     {
         // Process events
         Window.DispatchEvents();
         
         Window.Clear(SFML.Graphics.Color.Black);
 
-        foreach (var drawable in scene.ToRender)
+        foreach (var drawable in Scene.ToRender)
         {
             drawable.Draw();
         }

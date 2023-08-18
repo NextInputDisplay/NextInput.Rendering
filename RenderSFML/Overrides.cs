@@ -1,7 +1,7 @@
 using AbstractRendering;
 using SFML.Graphics;
 using SFML.System;
-using ConvexShape = AbstractRendering.ConvexShape;
+//using ConvexShape = AbstractRendering.ConvexShape;
 using Drawable = AbstractRendering.Drawable;
 using Shape = SFML.Graphics.Shape;
 using Text = SFML.Graphics.Text;
@@ -16,26 +16,26 @@ public static class Implementation
         Line.Implementation = new RenderLine();
         Circle.Implementation = new RenderCircle();
         Rectangle.Implementation = new RenderRect();
-        ConvexShape.Implementation = new RenderConvexShape();
+        //ConvexShape.Implementation = new RenderConvexShape();
         Polygon.Implementation = new RenderPolygon();
         AbstractRendering.Text.Implementation = new RenderText();
     }
     
-    public static void ApplyProperties(Shape shape, ShapeProperties properties)
+    public static void ApplyProperties(Shape sfmlShape, AbstractRendering.Shape shape)
     {
-        if (properties.TextureId == -1)
+        if (shape.TextureId == -1)
         {
-            shape.FillColor = Convert.Color(properties.Color);
+            sfmlShape.FillColor = Convert.Color(Renderer.Scene.Get3V(shape.ColorRef));
         }
         else
         {
-            shape.Texture = Renderer.Textures[properties.TextureId];
+            sfmlShape.Texture = Renderer.Textures[shape.TextureId];
             //shape.TextureRect = new IntRect(0, 0, 303, 188);
         }
         
-        shape.OutlineColor = Convert.Color(properties.OutlineColor);
-        shape.OutlineThickness = properties.OutlineWidth;
-        shape.Rotation = properties.Rotation;
+        sfmlShape.OutlineColor = Convert.Color(Renderer.Scene.Get3V(shape.OutlineColorRef));
+        sfmlShape.OutlineThickness = Renderer.Scene.GetV(shape.OutlineWidthRef);
+        sfmlShape.Rotation = Renderer.Scene.GetV(shape.RotationRef);
     }
 
 }
@@ -46,26 +46,29 @@ public class RenderLine : RenderImplementation
     {
         Line line = (Line)drawable;
 
-        float radius = line.Width / 2f;
+        float radius = Renderer.Scene.GetV(line.WidthRef) / 2f;
         CircleShape circle = new CircleShape(radius);
-        circle.FillColor = Convert.Color(line.Color);
+        circle.FillColor = Convert.Color(Renderer.Scene.Get3V(line.ColorRef));
 
         Vec2 radiusOffset = new Vec2(radius, radius);
+
+        Vec2 start = Renderer.Scene.Get2V(line.StartRef);
+        Vec2 end = Renderer.Scene.Get2V(line.EndRef);
         
-        circle.Position = Convert.Vec2(line.Start - radiusOffset);
+        circle.Position = Convert.Vec2(start - radiusOffset);
         Renderer.Window.Draw(circle);
-        circle.Position = Convert.Vec2(line.End - radiusOffset);
+        circle.Position = Convert.Vec2(end - radiusOffset);
         Renderer.Window.Draw(circle);
 
-        Vec2 difference = line.End - line.Start;
+        Vec2 difference = end - start;
         Vec2 offset = new Vec2(difference.Y, -difference.X).Normalized * radius;
         
         var convexShape = new SFML.Graphics.ConvexShape();
         convexShape.SetPointCount(4);
-        convexShape.SetPoint(0,Convert.Vec2(line.Start+offset));
-        convexShape.SetPoint(1,Convert.Vec2(line.Start-offset));
-        convexShape.SetPoint(2,Convert.Vec2(line.End-offset));
-        convexShape.SetPoint(3,Convert.Vec2(line.End+offset));
+        convexShape.SetPoint(0,Convert.Vec2(start+offset));
+        convexShape.SetPoint(1,Convert.Vec2(start-offset));
+        convexShape.SetPoint(2,Convert.Vec2(end-offset));
+        convexShape.SetPoint(3,Convert.Vec2(end+offset));
         convexShape.FillColor = circle.FillColor;
         
         Renderer.Window.Draw(convexShape);
@@ -79,11 +82,11 @@ public class RenderText : RenderImplementation
         var text = (AbstractRendering.Text)drawable;
 
         Text sfmlText = new Text(text.Message, Renderer.Fonts[text.FontId]);
-        sfmlText.OutlineThickness = text.OutlineWidth;
-        sfmlText.OutlineColor = Convert.Color(text.OutlineColor);
-        sfmlText.FillColor = Convert.Color(text.Color);
-        sfmlText.CharacterSize = (uint)text.CharacterSize;
-        sfmlText.Position = Convert.Vec2(text.Position);
+        sfmlText.OutlineThickness = Renderer.Scene.GetV(text.OutlineWidthRef);
+        sfmlText.OutlineColor = Convert.Color(Renderer.Scene.Get3V(text.OutlineColorRef));
+        sfmlText.FillColor = Convert.Color(Renderer.Scene.Get3V(text.ColorRef));
+        sfmlText.CharacterSize = (uint)Renderer.Scene.GetV(text.CharacterSizeRef);
+        sfmlText.Position = Convert.Vec2(Renderer.Scene.Get2V(text.PosRef));
 
         if (text.Centered)
         {
@@ -103,12 +106,12 @@ public class RenderCircle : RenderImplementation
     {
         Circle circle = (Circle)drawable;
 
-        _shape.Position = Convert.Vec2(circle.Pos);
-        _shape.Radius = circle.Radius;
+        _shape.Position = Convert.Vec2(Renderer.Scene.Get2V(circle.PosRef));
+        _shape.Radius = Renderer.Scene.GetV(circle.RadiusRef);
 
-        _shape.Origin = new Vector2f(circle.Radius, circle.Radius);
+        _shape.Origin = new Vector2f(_shape.Radius, _shape.Radius);
 
-        Implementation.ApplyProperties(_shape, circle.Properties);
+        Implementation.ApplyProperties(_shape, circle);
         
         Renderer.Window.Draw(_shape);
     }
@@ -120,16 +123,19 @@ public class RenderRect : RenderImplementation
     public override void Draw(Drawable drawable)
     {
         Rectangle rect = (Rectangle)drawable;
+        Vec2 p1 = Renderer.Scene.Get2V(rect.P1Ref);
+        Vec2 p2 = Renderer.Scene.Get2V(rect.P2Ref);
 
-        _shape.Position = Convert.Vec2(rect.P1);
-        _shape.Size = Convert.Vec2(rect.P2-rect.P1);
+        _shape.Position = Convert.Vec2(p1);
+        _shape.Size = Convert.Vec2(p2-p1);
         
-        Implementation.ApplyProperties(_shape, rect.Properties);
+        Implementation.ApplyProperties(_shape, rect);
         
         Renderer.Window.Draw(_shape);
     }
 }
 
+/*
 public class RenderConvexShape : RenderImplementation
 {
     private static SFML.Graphics.ConvexShape _sfmlShape = new();
@@ -148,7 +154,7 @@ public class RenderConvexShape : RenderImplementation
         
         Renderer.Window.Draw(_sfmlShape);
     }
-}
+}*/
 
 public class RenderPolygon : RenderImplementation
 {
@@ -157,12 +163,12 @@ public class RenderPolygon : RenderImplementation
     {
         Polygon polygon = (Polygon)drawable;
 
-        _shape = new CircleShape(polygon.Radius, (uint)polygon.NumSides);
-        _shape.Position = Convert.Vec2(polygon.Pos);
+        _shape = new CircleShape(Renderer.Scene.GetV(polygon.RadiusRef), (uint)Renderer.Scene.GetV(polygon.NumSidesRef));
+        _shape.Position = Convert.Vec2(Renderer.Scene.Get2V(polygon.PosRef));
         
-        _shape.Origin = new Vector2f(polygon.Radius, polygon.Radius);
+        _shape.Origin = new Vector2f(_shape.Radius, _shape.Radius);
         
-        Implementation.ApplyProperties(_shape, polygon.Properties);
+        Implementation.ApplyProperties(_shape, polygon);
         
         Renderer.Window.Draw(_shape);
     }
