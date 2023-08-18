@@ -6,333 +6,149 @@ namespace AbstractRendering;
 public class SceneJsonSerializer : JsonConverter<Scene>
 {
     public static Dictionary<string, Animator.ValueFunction> InputFunctions;
-
-    public override Scene? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override Scene? Read(ref Utf8JsonReader read, Type typeToConvert, JsonSerializerOptions options)
     {
-        void BadJsonGuard(JsonTokenType current, JsonTokenType target)
-        {
-            if (current != target)
-                throw new JsonException($"Expected \"{target}\" token but got \"{current}\" token");
-        }
-        
-        void BadJsonBoolGuard(JsonTokenType current)
-        {
-            if (current != JsonTokenType.False && current != JsonTokenType.True)
-                throw new JsonException($"Expected \"true\" or \"false\" token but got \"{current}\" token");
-        }
-
-        void BadJsonPropertyNameGuard(string current, string target)
-        {
-            if (current != target)
-                throw new JsonException($"Expected \"{target}\" property but got \"{current}\" property");
-        }
-
         Scene scene = new Scene(InputFunctions);
         
-        BadJsonGuard(reader.TokenType, JsonTokenType.StartObject);
-        reader.Read();
-        BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
+        Read(ref read, JsonTokenType.StartObject);
+        Property(ref read, "shapes");
+        #region Shapes
+        
+        Read(ref read, JsonTokenType.StartArray);
 
-        string? shapesPropertyName = reader.GetString();
-        BadJsonPropertyNameGuard(shapesPropertyName!, "shapes");
-
-        reader.Read();
-        BadJsonGuard(reader.TokenType, JsonTokenType.StartArray);
-        reader.Read();
-
-        while (reader.TokenType != JsonTokenType.EndArray)
+        while (read.TokenType != JsonTokenType.EndArray)
         {
-            BadJsonGuard(reader.TokenType, JsonTokenType.StartObject);
-            reader.Read();
-            BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
-            
-            string? typePropertyName = reader.GetString();
-            BadJsonPropertyNameGuard(typePropertyName!, "type");
-            
-            reader.Read();
-            BadJsonGuard(reader.TokenType, JsonTokenType.String);
-            
-            string? shapeType = reader.GetString();
+            Read(ref read, JsonTokenType.StartObject);
 
-            reader.Read();
-            BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
+            string? shapeType = ReadString(ref read, "type");
             
-            string? shapePropertyName = reader.GetString();
-            BadJsonPropertyNameGuard(shapePropertyName!, "shape");
-            
-            reader.Read();
-            BadJsonGuard(reader.TokenType, JsonTokenType.StartObject);
+            Property(ref read,"shape");
+            BadJsonGuard(read.TokenType, JsonTokenType.StartObject);
 
             switch (shapeType)
             {
                 case "line":
-                    Line pooLine = new Line();
-                    scene.Add(pooLine);
+                    Line line = new Line();
+                    scene.Add(line);
                     break;
+                
                 case "circle":
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
+                    read.Read();
                     
-                    string? textureId = reader.GetString();
-                    BadJsonPropertyNameGuard(textureId!, "textureId");
-                    
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.Number);
-            
-                    int texId = reader.GetInt32();
-                    
-                    Circle pooCircle = new Circle();
-                    pooCircle.TextureId = texId;
-                    scene.Add(pooCircle);
+                    Circle circle = new Circle();
+                    circle.TextureId = ReadIntQuick(ref read, "textureId");
+                    scene.Add(circle);
                     break;
+                
                 case "polygon":
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
+                    read.Read();
                     
-                    string? textureIdP = reader.GetString();
-                    BadJsonPropertyNameGuard(textureIdP!, "textureId");
-                    
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.Number);
-            
-                    int texIdP = reader.GetInt32();
                     Polygon polygon = new Polygon();
-                    polygon.TextureId = texIdP;
+                    polygon.TextureId = ReadIntQuick(ref read, "textureId");
                     scene.Add(polygon);
                     break;
+                
                 case "rectangle":
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
+                    read.Read();
                     
-                    string? textureIdR = reader.GetString();
-                    BadJsonPropertyNameGuard(textureIdR!, "textureId");
-                    
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.Number);
-            
-                    int texIdR = reader.GetInt32();
                     Rectangle rectangle = new Rectangle();
-                    rectangle.TextureId = texIdR;
+                    rectangle.TextureId = ReadIntQuick(ref read, "textureId");
                     scene.Add(rectangle);
                     break;
                 
                 case "text":
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
+                    read.Read();
                     
-                    string? messageProperty = reader.GetString();
-                    BadJsonPropertyNameGuard(messageProperty!, "message");
+                    string? textMessage = ReadString(ref read, "message");
+                    int fontId = ReadInt(ref read, "fontId");
+                    bool centered = ReadBoolQuick(ref read, "centered");
                     
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.String);
-            
-                    string? textMessage = reader.GetString();
-                    
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
-                    
-                    string? fontIdProperty = reader.GetString();
-                    BadJsonPropertyNameGuard(fontIdProperty!, "fontId");
-                    
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.Number);
-            
-                    int fontId = reader.GetInt32();
-                    
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
-                    
-                    string? centeredProperty = reader.GetString();
-                    BadJsonPropertyNameGuard(centeredProperty!, "centered");
-                    
-                    reader.Read();
-                    BadJsonBoolGuard(reader.TokenType);
-                    bool centered = reader.GetBoolean();
-
-                    var pooText = new Text(textMessage, fontId, centered);
-                    scene.Add(pooText);
+                    scene.Add(new Text(textMessage!, fontId, centered));
                     break;
                 
                 case "convex":
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
-                    
-                    string? numVertsProperty = reader.GetString();
-                    BadJsonPropertyNameGuard(numVertsProperty!, "numVerts");
-                    
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.Number);
-            
-                    int numVerts = reader.GetInt32();
-                    
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
-                    
-                    string? textureIdC = reader.GetString();
-                    BadJsonPropertyNameGuard(textureIdC!, "textureId");
-                    
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.Number);
-            
-                    int texIdC = reader.GetInt32();
-                    ConvexShape convexShape = new ConvexShape(numVerts);
-                    convexShape.TextureId = texIdC;
+                    read.Read();
+
+                    ConvexShape convexShape = new ConvexShape(ReadInt(ref read, "numVerts"));
+                    convexShape.TextureId = ReadIntQuick(ref read, "textureId");
                     scene.Add(convexShape);
                     break;
             }
             
-            reader.Read();
-            BadJsonGuard(reader.TokenType, JsonTokenType.EndObject);
-            
-            reader.Read();
-            BadJsonGuard(reader.TokenType, JsonTokenType.EndObject);
-
-            reader.Read();
+            read.Read();
+            EndObject(ref read); EndObject(ref read);
         }
         
-        reader.Read();
-        BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
+        read.Read();
+        #endregion
         
-        string? valuesPropertyName = reader.GetString();
-        BadJsonPropertyNameGuard(valuesPropertyName!, "values");
+        Property(ref read,"values");
+        #region Values
 
-        reader.Read();
-        BadJsonGuard(reader.TokenType, JsonTokenType.StartArray);
-        reader.Read();
+        StartArray(ref read);
 
         List<float> values = new List<float>();
 
-        while (reader.TokenType != JsonTokenType.EndArray)
+        while (read.TokenType != JsonTokenType.EndArray)
         {
-            BadJsonGuard(reader.TokenType, JsonTokenType.Number);
-
-            float value = (float)reader.GetDouble();
-            values.Add(value);
-            
-            reader.Read();
+            values.Add(ReadFloat(ref read));
         }
 
         scene.Values = values.ToArray();
         
-        reader.Read();
-        BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
+        read.Read();
+        #endregion
         
-        string? animationsPropertyName = reader.GetString();
-        BadJsonPropertyNameGuard(animationsPropertyName!, "animations");
-        
-        reader.Read();
-        BadJsonGuard(reader.TokenType, JsonTokenType.StartArray);
+        Property(ref read,"animations");
+        #region Animations
 
-        reader.Read();
+        StartArray(ref read);
 
-        while (reader.TokenType != JsonTokenType.EndArray)
+        while (read.TokenType != JsonTokenType.EndArray)
         {
-            BadJsonGuard(reader.TokenType, JsonTokenType.StartObject);
-            reader.Read();
-            
-            BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
-            
-            string? functionNameProperty = reader.GetString();
-            BadJsonPropertyNameGuard(functionNameProperty!, "functionName");
-            
-            reader.Read();
-            BadJsonGuard(reader.TokenType, JsonTokenType.String);
-            
-            string? functionName = reader.GetString();
+            StartObject(ref read);
 
+            string? functionName = ReadString(ref read, "functionName");
+            Property(ref read, "keyFrames");
+            
+            StartArray(ref read);
+            
             List<KeyFrameHandler> keyFrameHandlers = new List<KeyFrameHandler>();
-
-            reader.Read();
-            BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
-            
-            string? keyFramesProperty = reader.GetString();
-            BadJsonPropertyNameGuard(keyFramesProperty!, "keyFrames");
-            
-            reader.Read();
-            BadJsonGuard(reader.TokenType, JsonTokenType.StartArray);
-
-            reader.Read();
-
-            while (reader.TokenType != JsonTokenType.EndArray)
+            while (read.TokenType != JsonTokenType.EndArray)
             {
-                BadJsonGuard(reader.TokenType, JsonTokenType.StartObject);
-                reader.Read();
+                StartObject(ref read);
                 
-                BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
-                
-                string? propIdProperty = reader.GetString();
-                BadJsonPropertyNameGuard(propIdProperty!, "propertyId");
-
-                reader.Read();
-                BadJsonGuard(reader.TokenType, JsonTokenType.Number);
-
-                int propertyId = reader.GetInt32();
-
+                int propertyId = ReadInt(ref read, "propertyId");
                 KeyFrameHandler keyFrameHandler = new KeyFrameHandler(propertyId);
                 
-                reader.Read();
-                BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
+                Property(ref read,"keyFrameData");
                 
-                string? keyFrameDataProperty = reader.GetString();
-                BadJsonPropertyNameGuard(keyFrameDataProperty!, "keyFrameData");
-                
-                reader.Read();
-                BadJsonGuard(reader.TokenType, JsonTokenType.StartArray);
+                StartArray(ref read);
 
-                reader.Read();
-
-                while (reader.TokenType != JsonTokenType.EndArray)
+                while (read.TokenType != JsonTokenType.EndArray)
                 {
-                    BadJsonGuard(reader.TokenType, JsonTokenType.StartObject);
-                    reader.Read();
-                    
-                    BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
+                    StartObject(ref read);
 
-                    string? timeProperty = reader.GetString();
-                    BadJsonPropertyNameGuard(timeProperty!, "time");
+                    float time = ReadFloat(ref read, "time");
+                    float value = ReadFloat(ref read, "value");
 
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.Number);
-
-                    float time = (float)reader.GetDouble();
-                    
-                    reader.Read();
-                    
-                    BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
-
-                    string? valueProperty = reader.GetString();
-                    BadJsonPropertyNameGuard(valueProperty!, "value");
-                    
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.Number);
-
-                    float value = (float)reader.GetDouble();
-
-                    reader.Read();
-                    BadJsonGuard(reader.TokenType, JsonTokenType.EndObject);
-                    
-                    reader.Read();
-                    
+                    EndObject(ref read);
                     keyFrameHandler.Add(time, value);
                 }
-                reader.Read();
-                BadJsonGuard(reader.TokenType, JsonTokenType.EndObject);
                 
-                reader.Read();
+                read.Read();EndObject(ref read);
                 
                 keyFrameHandlers.Add(keyFrameHandler);
-                
             }
-            reader.Read();
-            BadJsonGuard(reader.TokenType, JsonTokenType.EndObject);
             
-            reader.Read();
+            read.Read();EndObject(ref read);
             
-            scene.Animator.Add(functionName, keyFrameHandlers.ToArray());
+            scene.Animator.Add(functionName!, keyFrameHandlers.ToArray());
         }
 
-        reader.Read();
-        BadJsonGuard(reader.TokenType, JsonTokenType.EndObject);
+        read.Read();
+        BadJsonGuard(read.TokenType, JsonTokenType.EndObject);
+        #endregion
 
         return scene;
     }
@@ -340,6 +156,7 @@ public class SceneJsonSerializer : JsonConverter<Scene>
     public override void Write(Utf8JsonWriter writer, Scene value, JsonSerializerOptions options)
     {
         writer.WriteStartObject();
+        
         writer.WritePropertyName("shapes");
         writer.WriteStartArray();
         foreach (Drawable drawable in value.ToRender)
@@ -350,74 +167,35 @@ public class SceneJsonSerializer : JsonConverter<Scene>
             switch (drawable)
             {
                 case Line line:
-                    writer.WriteStringValue("line");
-                    
-                    writer.WritePropertyName("shape");
-                    writer.WriteStartObject();
-
-                    writer.WriteEndObject();
-                    
+                    WriteShape(writer, "line").End();
                     break;
                 case ConvexShape convexShape:
-                    writer.WriteStringValue("convex");
-                    
-                    writer.WritePropertyName("shape");
-                    writer.WriteStartObject();
-                    
-                    writer.WritePropertyName("numVerts");
-                    writer.WriteNumberValue(convexShape.NumVerts);
-                    writer.WritePropertyName("textureId");
-                    writer.WriteNumberValue(convexShape.TextureId);
-                    
-                    writer.WriteEndObject();
+                    WriteShape(writer, "convex")
+                        .Add("numVerts", convexShape.NumVerts)
+                        .Add("textureId", convexShape.TextureId)
+                    .End();
                     break;
                 case Circle circle:
-                    writer.WriteStringValue("circle");
-                    
-                    writer.WritePropertyName("shape");
-                    writer.WriteStartObject();
-                    
-                    writer.WritePropertyName("textureId");
-                    writer.WriteNumberValue(circle.TextureId);
-                    
-                    writer.WriteEndObject();
+                    WriteShape(writer, "circle")
+                        .Add("textureId", circle.TextureId)
+                    .End();
                     break;
                 case Polygon polygon:
-                    writer.WriteStringValue("polygon");
-                    
-                    writer.WritePropertyName("shape");
-                    writer.WriteStartObject();
-                    
-                    writer.WritePropertyName("textureId");
-                    writer.WriteNumberValue(polygon.TextureId);
-                    
-                    writer.WriteEndObject();
+                    WriteShape(writer, "polygon")
+                        .Add("textureId", polygon.TextureId)
+                    .End();
                     break;
                 case Rectangle rectangle:
-                    writer.WriteStringValue("rectangle");
-                    
-                    writer.WritePropertyName("shape");
-                    writer.WriteStartObject();
-                    
-                    writer.WritePropertyName("textureId");
-                    writer.WriteNumberValue(rectangle.TextureId);
-                    
-                    writer.WriteEndObject();
+                    WriteShape(writer, "rectangle")
+                        .Add("textureId", rectangle.TextureId)
+                    .End();
                     break;
                 case Text text:
-                    writer.WriteStringValue("text");
-                    
-                    writer.WritePropertyName("shape");
-                    writer.WriteStartObject();
-                    
-                    writer.WritePropertyName("message");
-                    writer.WriteStringValue(text.Message);
-                    writer.WritePropertyName("fontId");
-                    writer.WriteNumberValue(text.FontId);
-                    writer.WritePropertyName("centered");
-                    writer.WriteBooleanValue(text.Centered);
-
-                    writer.WriteEndObject();
+                    WriteShape(writer, "text")
+                        .Add("message", text.Message)
+                        .Add("fontId", text.FontId)
+                        .Add("centered", text.Centered)
+                    .End();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(drawable));
@@ -456,14 +234,10 @@ public class SceneJsonSerializer : JsonConverter<Scene>
                 writer.WriteStartArray();
                 foreach (KeyFrame keyFrameData in kf.KeyFrames)
                 {
-                    writer.WriteStartObject();
-                    
-                    writer.WritePropertyName("time");
-                    writer.WriteNumberValue(keyFrameData.Time);
-                    writer.WritePropertyName("value");
-                    writer.WriteNumberValue(keyFrameData.Value);
-                    
-                    writer.WriteEndObject();
+                    WriteObj(writer)
+                        .Add("time",keyFrameData.Time)
+                        .Add("value",keyFrameData.Value)
+                    .End();
                 }
                 writer.WriteEndArray();
                 
@@ -476,4 +250,168 @@ public class SceneJsonSerializer : JsonConverter<Scene>
         
         writer.WriteEndObject();
     }
+    
+    
+    #region Helper Functions
+
+    class ObjectHelper
+    {
+        private Utf8JsonWriter _writer;
+        public ObjectHelper(Utf8JsonWriter writer)
+        {
+            _writer = writer;
+        }
+
+        public ObjectHelper Add(string name, string value)
+        {
+            _writer.WritePropertyName(name);
+            _writer.WriteStringValue(value);
+            return this;
+        }
+        
+        public ObjectHelper Add(string name, int value)
+        {
+            _writer.WritePropertyName(name);
+            _writer.WriteNumberValue(value);
+            return this;
+        } 
+        
+        public ObjectHelper Add(string name, float value)
+        {
+            _writer.WritePropertyName(name);
+            _writer.WriteNumberValue(value);
+            return this;
+        } 
+        
+        public ObjectHelper Add(string name, bool value)
+        {
+            _writer.WritePropertyName(name);
+            _writer.WriteBooleanValue(value);
+            return this;
+        }
+
+        public void End()
+        {
+            _writer.WriteEndObject();
+        }
+    }
+
+    private ObjectHelper WriteShape(Utf8JsonWriter writer, string type)
+    {
+        writer.WriteStringValue(type);
+        writer.WritePropertyName("shape");
+        writer.WriteStartObject();
+
+        return new ObjectHelper(writer);
+    }
+    
+    private ObjectHelper WriteObj(Utf8JsonWriter writer)
+    {
+        writer.WriteStartObject();
+
+        return new ObjectHelper(writer);
+    }
+    
+    
+    private void BadJsonGuard(JsonTokenType current, JsonTokenType target)
+    {
+        if (current != target)
+            throw new JsonException($"Expected \"{target}\" token but got \"{current}\" token");
+    }
+        
+    private void BadJsonBoolGuard(JsonTokenType current)
+    {
+        if (current != JsonTokenType.False && current != JsonTokenType.True)
+            throw new JsonException($"Expected \"true\" or \"false\" token but got \"{current}\" token");
+    }
+    
+    private void BadJsonPropertyNameGuard(string current, string target)
+    {
+        if (current != target)
+            throw new JsonException($"Expected \"{target}\" property but got \"{current}\" property");
+    }
+    
+    private void Read(ref Utf8JsonReader reader, JsonTokenType expectedType)
+    {
+        BadJsonGuard(reader.TokenType, expectedType);
+        reader.Read();
+    }    
+    private void Property(ref Utf8JsonReader reader, string name)
+    {
+        BadJsonGuard(reader.TokenType, JsonTokenType.PropertyName);
+        BadJsonPropertyNameGuard(reader.GetString()!, name);
+        reader.Read();
+    }
+
+    private string? ReadString(ref Utf8JsonReader reader, string title)
+    {
+        string? str = ReadStringQuick(ref reader, title);
+        reader.Read();
+        return str;
+    }
+
+    private string? ReadStringQuick(ref Utf8JsonReader reader, string title)
+    {
+        Property(ref reader, title);
+        BadJsonGuard(reader.TokenType, JsonTokenType.String);
+        return reader.GetString();
+    }
+
+    private int ReadIntQuick(ref Utf8JsonReader reader, string title)
+    {
+        Property(ref reader,title);
+        BadJsonGuard(reader.TokenType, JsonTokenType.Number);
+        return reader.GetInt32();
+    }
+    
+    private int ReadInt(ref Utf8JsonReader reader, string title)
+    {
+        int val = ReadIntQuick(ref reader, title);
+        reader.Read();
+        return val;
+    }
+
+    private bool ReadBoolQuick(ref Utf8JsonReader reader, string title)
+    {
+        Property(ref reader, "centered");
+        BadJsonBoolGuard(reader.TokenType);
+        return reader.GetBoolean();
+    }
+
+    private void EndObject(ref Utf8JsonReader reader)
+    {
+        BadJsonGuard(reader.TokenType, JsonTokenType.EndObject);
+        reader.Read();
+    }
+
+    private float ReadFloat(ref Utf8JsonReader reader)
+    {
+        BadJsonGuard(reader.TokenType, JsonTokenType.Number);
+        float value = (float)reader.GetDouble();
+        reader.Read();
+        return value;
+    }
+    
+    private float ReadFloat(ref Utf8JsonReader reader, string title)
+    {
+        Property(ref reader, title);
+        BadJsonGuard(reader.TokenType, JsonTokenType.Number);
+        float value = (float)reader.GetDouble();
+        reader.Read();
+        return value;
+    }
+
+    private void StartArray(ref Utf8JsonReader reader)
+    {
+        BadJsonGuard(reader.TokenType, JsonTokenType.StartArray);
+        reader.Read();
+    }
+
+    private void StartObject(ref Utf8JsonReader reader)
+    {
+        BadJsonGuard(reader.TokenType, JsonTokenType.StartObject);
+        reader.Read();
+    }
+    
+    #endregion
 }
