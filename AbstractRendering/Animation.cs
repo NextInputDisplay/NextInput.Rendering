@@ -1,34 +1,55 @@
 namespace AbstractRendering;
 
+public class Handler
+{
+    private Animator.ValueFunction _valueFunction;
+    private List<KeyFrameHandler> _keyFrameHandlers;
+
+    public Handler(Animator.ValueFunction valueFunction, params KeyFrameHandler[] keyFrameHandlers)
+    {
+        _valueFunction = valueFunction;
+        _keyFrameHandlers = new List<KeyFrameHandler>(keyFrameHandlers);
+    }
+
+    public void Update()
+    {
+        float value = _valueFunction();
+
+        foreach (var keyFrameHandler in _keyFrameHandlers)
+        {
+            keyFrameHandler.Update(value);
+        }
+    }
+
+    public void Add(KeyFrameHandler handler) => _keyFrameHandlers.Add(handler);
+}
+
 public class Animator
 {
-    List<KeyFrameHandler> handlers;
-
     public delegate float ValueFunction();
 
-    public ValueFunction GetValue;
+    private List<Handler> _handlers;
     
-    public Animator(ValueFunction valueFunction)
+    public Animator()
     {
-        handlers = new List<KeyFrameHandler>();
-        GetValue = valueFunction;
+        _handlers = new List<Handler>();
     }
     
     public void Update()
     {
-        Set(GetValue());
+        foreach (var handler in _handlers)
+        {
+            handler.Update();
+        }
     }
 
-    public void Set(float value)
+    public void Add(params Handler[] handlers)
     {
         foreach (var handler in handlers)
         {
-            handler.Update(value);
+            _handlers.Add(handler);
         }
-
     }
-
-    public void Add(KeyFrameHandler handler) => handlers.Add(handler);
 }
 
 public class KeyFrame

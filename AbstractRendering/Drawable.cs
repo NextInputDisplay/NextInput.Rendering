@@ -25,13 +25,9 @@ public abstract class Drawable
 
 public class Line : Drawable
 {
-    public Line(Vec2 start, Vec2 end, float width = 1f)
+    public Line()
     {
         PointerSize = 9;
-        
-        Current.Scene.Set2V(StartRef,start);
-        Current.Scene.Set2V(EndRef,end);
-        Current.Scene.SetV(WidthRef,width);
     }
     
     // Properties:
@@ -136,32 +132,36 @@ public class Rectangle : Shape
     public override void Draw() => Implementation.Draw(this);
 }
 
-/*
+
 public class ConvexShape : Shape
 {
-    public Vec2[] Verts;
+    // Properties:
+    //  shape,    verts
+    //  (0..9),  (10...)
+    
+    public int VertsRef => StartPointer + 10;
+    public int NumVerts;
 
-    public ConvexShape(Vec2[] verts)
+    public ConvexShape(int numVerts)
     {
-        PointerSize = 
-        
-        Verts = verts;
+        PointerSize = 10 + numVerts *2;
+        NumVerts = numVerts;
     }
 
     public override string ToString()
     {
         string str = "{";
-        for (int i = 0; i < Verts.Length-1; i++)
+        for (int i = 0; i < NumVerts-1; i++)
         {
-            str += Verts[i] + ",";
+            str += ((Vec2)(Current.Scene.Get2V(VertsRef + i * 2))) + ",";
         }
 
-        return str + Verts[^1] + "}";
+        return str + ((Vec2)(Current.Scene.Get2V(VertsRef + (NumVerts-1) * 2))) + "}";
     }
     
     public static RenderImplementation Implementation = new EmptyImplementation();
     public override void Draw() => Implementation.Draw(this);
-}*/
+}
 
 public class Polygon : Shape
 {

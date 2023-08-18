@@ -1,7 +1,7 @@
 using AbstractRendering;
 using SFML.Graphics;
 using SFML.System;
-//using ConvexShape = AbstractRendering.ConvexShape;
+using ConvexShape = AbstractRendering.ConvexShape;
 using Drawable = AbstractRendering.Drawable;
 using Shape = SFML.Graphics.Shape;
 using Text = SFML.Graphics.Text;
@@ -16,7 +16,7 @@ public static class Implementation
         Line.Implementation = new RenderLine();
         Circle.Implementation = new RenderCircle();
         Rectangle.Implementation = new RenderRect();
-        //ConvexShape.Implementation = new RenderConvexShape();
+        ConvexShape.Implementation = new RenderConvexShape();
         Polygon.Implementation = new RenderPolygon();
         AbstractRendering.Text.Implementation = new RenderText();
     }
@@ -135,7 +135,7 @@ public class RenderRect : RenderImplementation
     }
 }
 
-/*
+
 public class RenderConvexShape : RenderImplementation
 {
     private static SFML.Graphics.ConvexShape _sfmlShape = new();
@@ -143,18 +143,18 @@ public class RenderConvexShape : RenderImplementation
     {
         ConvexShape shape = (ConvexShape)drawable;
         
-        _sfmlShape.SetPointCount((uint)shape.Verts.Length);
+        _sfmlShape.SetPointCount((uint)shape.NumVerts);
 
-        for (uint i = 0; i < shape.Verts.Length; i++)
+        for (int i = 0; i < shape.NumVerts; i++)
         {
-            _sfmlShape.SetPoint(i,Convert.Vec2(shape.Verts[i]));
+            _sfmlShape.SetPoint((uint)i,Convert.Vec2( Renderer.Scene.Get2V(shape.VertsRef + i * 2) ));
         }
         
-        Implementation.ApplyProperties(_sfmlShape, shape.Properties);
+        Implementation.ApplyProperties(_sfmlShape, shape);
         
         Renderer.Window.Draw(_sfmlShape);
     }
-}*/
+}
 
 public class RenderPolygon : RenderImplementation
 {

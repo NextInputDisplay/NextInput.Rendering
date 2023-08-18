@@ -9,14 +9,11 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Animator rightTrigger = new Animator(Input.GetRightTrigger);
-        Animator leftStickX = new Animator(Input.GetAdjustedLeftStickX);
-        Animator leftStickY = new Animator(Input.GetAdjustedLeftStickY);
-        Animator buttonAnimatorB = new Animator(Input.GetButtonB);
-        Animator buttonAnimatorA = new Animator(Input.GetButtonA);
+        Animator animator = new Animator();
+
         
         Scene scene = new Scene();
-        scene.Values = new float[40];
+        scene.Values = new float[100];
         
         WindowProperties properties = new WindowProperties()
         {
@@ -30,55 +27,73 @@ public class Program
         Renderer.LoadFonts("AgaveNerdFont-Regular.ttf");
         
         
-
         
-        /*
+        
         #region Circle
-        Circle lunaCircle = new Circle((100,100),100);
-        ShapeProperties lunaCircleProperties = new ShapeProperties { TextureId = 0, OutlineColor = Color.Red, OutlineWidth = 10 };
-        scene.Add(lunaCircle,lunaCircleProperties);
+        Circle lunaCircle = new Circle();scene.Add(lunaCircle);
+        lunaCircle.TextureId = 0;
+        scene.Set2V(lunaCircle.PosRef,(100,100));
+        scene.SetV(lunaCircle.RadiusRef,100);
+        scene.Set4V(lunaCircle.OutlineColorRef,Color.Red);
         
-        KeyFrameHandler lunaCircleOutlineColour = new KeyFrameHandler(ref lunaCircleProperties.OutlineColor.H);
+        KeyFrameHandler lunaCircleOutlineColour = new KeyFrameHandler(lunaCircle.OutlineColorRef);
         lunaCircleOutlineColour.Add(0f,0f);
         lunaCircleOutlineColour.Add(1f,360f);
-        KeyFrameHandler lunaCircleOutlineWidth = new KeyFrameHandler(ref lunaCircleProperties.OutlineWidth);
+        KeyFrameHandler lunaCircleOutlineWidth = new KeyFrameHandler(lunaCircle.OutlineWidthRef);
         lunaCircleOutlineWidth.Add(0f,5f);
         lunaCircleOutlineWidth.Add(1f,100f);
-        KeyFrameHandler lunaCircleMovementX= new KeyFrameHandler(ref lunaCircle.Pos.X);
+        KeyFrameHandler lunaCircleMovementX= new KeyFrameHandler(lunaCircle.PosRef);
         lunaCircleMovementX.Add(0f,100f);
         lunaCircleMovementX.Add(1f,500f);
-        KeyFrameHandler lunaCircleRotation = new KeyFrameHandler(ref lunaCircleProperties.Rotation);
+        KeyFrameHandler lunaCircleRotation = new KeyFrameHandler(lunaCircle.RotationRef);
         lunaCircleRotation.Add(0f,0f);
         lunaCircleRotation.Add(1f,360f);
         
-        rightTrigger.Add(lunaCircleOutlineColour);
-        rightTrigger.Add(lunaCircleOutlineWidth);
-        rightTrigger.Add(lunaCircleMovementX);
-        rightTrigger.Add(lunaCircleRotation);
+        animator.Add(new Handler(Input.GetRightTrigger, 
+            lunaCircleOutlineColour,
+            lunaCircleOutlineWidth,
+            lunaCircleMovementX,
+            lunaCircleRotation
+        ));
+
         #endregion
         
-        scene.Add(new Rectangle((400,200),(450,300)),
-            new ShapeProperties {Color = Color.Green}
-        );
-        scene.Add(new ConvexShape(new Vec2[]{(300,250),(250,300),(350,300)}),
-            new ShapeProperties {Color = Color.Blue}
-        );
-        Line line = new Line((700, 500), (700, 500), 5);
-        line.Color = Color.White;
+        
+        var rect = new Rectangle(); scene.Add(rect);
+        scene.Set2V(rect.P1Ref, (400,200));
+        scene.Set2V(rect.P2Ref, (450,300));
+        scene.Set4V(rect.ColorRef, Color.Green);
 
-        var lineEndX = new KeyFrameHandler(ref line.End.X);
+
+        var convexShape = new ConvexShape(3); scene.Add(convexShape);
+        scene.Set2V(convexShape.VertsRef+0,(300,250));
+        scene.Set2V(convexShape.VertsRef+2,(250,300));
+        scene.Set2V(convexShape.VertsRef+4,(350,300));
+        scene.Set4V(convexShape.ColorRef,Color.Blue);
+        
+        Console.WriteLine(convexShape);
+        Console.WriteLine(convexShape.StartPointer);
+        
+        
+        Line line = new Line(); scene.Add(line);
+        scene.Set2V(line.StartRef,(700,500));
+        scene.SetV(line.WidthRef,5f);
+        scene.Set4V(line.ColorRef,Color.White);
+
+        var lineEndX = new KeyFrameHandler(line.EndRef);
         lineEndX.Add(0f,600f);
         lineEndX.Add(1f,800f);
-        leftStickX.Add(lineEndX);
         
-        var lineEndY = new KeyFrameHandler(ref line.End.Y);
+        var lineEndY = new KeyFrameHandler(line.EndRef+1);
         lineEndY.Add(0f,400f);
         lineEndY.Add(1f,600f);
-        leftStickY.Add(lineEndY);
         
-        scene.Add(line);
-        */
+        animator.Add(new Handler(Input.GetAdjustedLeftStickX, lineEndX),new Handler(Input.GetAdjustedLeftStickY, lineEndY));
         
+        Console.WriteLine(line.StartPointer);
+        
+        
+        #region Polygon
         var polygon = new Polygon(); scene.Add(polygon);
         
         scene.Set2V(polygon.PosRef,(350,350));
@@ -89,8 +104,10 @@ public class Program
         polygonNumSides.Add(0f,6);
         polygonNumSides.Add(1f,8);
         
+        animator.Add(new Handler(Input.GetButtonB, polygonNumSides));
+        #endregion
         
-        
+        #region Text
         var pooText = new Text("poo",0, true); scene.Add(pooText);
         
         scene.Set2V(pooText.PosRef,(350,350));
@@ -101,16 +118,13 @@ public class Program
         pooTextAlpha.Add(0f, 0f);
         pooTextAlpha.Add(1f, 1f);
         
-        
-        
-        buttonAnimatorB.Add(polygonNumSides);
-        buttonAnimatorA.Add(pooTextAlpha);
+        animator.Add(new Handler(Input.GetButtonA, pooTextAlpha));
+        #endregion
    
 
         while (Renderer.Window.IsOpen)
         {
-            buttonAnimatorA.Update();
-            buttonAnimatorB.Update();
+            animator.Update();
 
             Renderer.Update();
         }
