@@ -45,10 +45,15 @@ public static class Input
         return (y + 1f) / 2f;
     }
 
-    public static uint CurrentButton = 1;
-    public static float GetButton()
+
+    public static float GetButtonA()
     {
-        return Joystick.IsButtonPressed(0, CurrentButton)?1f:0f;
+        return Joystick.IsButtonPressed(0, 0)?1f:0f;
+    }
+    
+    public static float GetButtonB()
+    {
+        return Joystick.IsButtonPressed(0, 1)?1f:0f;
     }
     
 }

@@ -12,7 +12,8 @@ public class Program
         Animator rightTrigger = new Animator(Input.GetRightTrigger);
         Animator leftStickX = new Animator(Input.GetAdjustedLeftStickX);
         Animator leftStickY = new Animator(Input.GetAdjustedLeftStickY);
-        Animator buttonAnimator = new Animator(Input.GetButton);
+        Animator buttonAnimatorB = new Animator(Input.GetButtonB);
+        Animator buttonAnimatorA = new Animator(Input.GetButtonA);
         
         
         WindowProperties properties = new WindowProperties()
@@ -24,6 +25,7 @@ public class Program
         Renderer.Init(properties);
         
         Renderer.LoadTextures("test.png");
+        Renderer.LoadFonts("AgaveNerdFont-Regular.ttf");
         
         Scene scene = new Scene();
         
@@ -72,23 +74,37 @@ public class Program
         
         scene.Add(line);
 
-        var polygon = new Polygon((300, 300), 50, 8);
+        var polygon = new Polygon((350, 350), 50, 8);
         
         KeyFrameHandler polygonNumSides = new KeyFrameHandler(ref polygon.NumSides);
         polygonNumSides.Add(0f,6);
         polygonNumSides.Add(1f,8);
         
-        buttonAnimator.Add(polygonNumSides);
+        buttonAnimatorB.Add(polygonNumSides);
         
         
         scene.Add(polygon,
             new ShapeProperties {Color = Color.Red}
         );
 
+        var pooText = new Text("poo",new Vec2(350,350),0);
+        pooText.Color = Color.White;
+        pooText.CharacterSize = 40f;
+        pooText.Centered = true;
+        scene.Add(pooText);
+
+        KeyFrameHandler pooTextAlpha= new KeyFrameHandler(ref pooText.Color.A);
+        pooTextAlpha.Add(0f, 0f);
+        pooTextAlpha.Add(1f, 1f);
+        
+        buttonAnimatorA.Add(pooTextAlpha);
+        
+
         while (Renderer.Window.IsOpen)
         {
             rightTrigger.Update();
-            buttonAnimator.Update();
+            buttonAnimatorB.Update();
+            buttonAnimatorA.Update();
             leftStickX.Update();
             leftStickY.Update();
             Renderer.Update(scene);

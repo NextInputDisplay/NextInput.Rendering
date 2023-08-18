@@ -35,6 +35,31 @@ public class Line : Drawable
     public override void Draw() => Implementation.Draw(this);
 }
 
+public class Text : Drawable
+{
+    public string Message;
+    public int FontId;
+    public Color Color = Color.Black;
+    public Color OutlineColor = Color.Black;
+    public Property OutlineWidth = 0f;
+    public Property CharacterSize = 10f;
+    public Vec2 Position;
+    public bool Centered = false;
+
+    public Text(string message, Vec2 pos, int fontId)
+    {
+        Message = message;
+        Position = pos;
+        FontId = fontId;
+    }
+    
+    
+    public override string ToString() => Message;
+    
+    public static RenderImplementation Implementation = new EmptyImplementation();
+    public override void Draw() => Implementation.Draw(this);
+}
+
 
 public class ShapeProperties
 {

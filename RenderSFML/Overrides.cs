@@ -4,6 +4,7 @@ using SFML.System;
 using ConvexShape = AbstractRendering.ConvexShape;
 using Drawable = AbstractRendering.Drawable;
 using Shape = SFML.Graphics.Shape;
+using Text = SFML.Graphics.Text;
 
 namespace RenderSFML;
 
@@ -17,6 +18,7 @@ public static class Implementation
         Rectangle.Implementation = new RenderRect();
         ConvexShape.Implementation = new RenderConvexShape();
         Polygon.Implementation = new RenderPolygon();
+        AbstractRendering.Text.Implementation = new RenderText();
     }
     
     public static void ApplyProperties(Shape shape, ShapeProperties properties)
@@ -67,6 +69,30 @@ public class RenderLine : RenderImplementation
         convexShape.FillColor = circle.FillColor;
         
         Renderer.Window.Draw(convexShape);
+    }
+}
+
+public class RenderText : RenderImplementation
+{
+    public override void Draw(Drawable drawable)
+    {
+        var text = (AbstractRendering.Text)drawable;
+
+        Text sfmlText = new Text(text.Message, Renderer.Fonts[text.FontId]);
+        sfmlText.OutlineThickness = text.OutlineWidth;
+        sfmlText.OutlineColor = Convert.Color(text.OutlineColor);
+        sfmlText.FillColor = Convert.Color(text.Color);
+        sfmlText.CharacterSize = (uint)text.CharacterSize;
+        sfmlText.Position = Convert.Vec2(text.Position);
+
+        if (text.Centered)
+        {
+            var g = sfmlText.GetGlobalBounds();
+            var l = sfmlText.GetLocalBounds();
+            sfmlText.Origin = new Vector2f(MathF.Round(g.Width / 2f + l.Left), MathF.Round(g.Height / 2f + l.Top));
+        }
+
+        Renderer.Window.Draw(sfmlText);
     }
 }
 
@@ -133,6 +159,8 @@ public class RenderPolygon : RenderImplementation
 
         _shape = new CircleShape(polygon.Radius, (uint)polygon.NumSides);
         _shape.Position = Convert.Vec2(polygon.Pos);
+        
+        _shape.Origin = new Vector2f(polygon.Radius, polygon.Radius);
         
         Implementation.ApplyProperties(_shape, polygon.Properties);
         

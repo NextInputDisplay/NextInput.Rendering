@@ -9,12 +9,23 @@ public static class Renderer
 {
     public static RenderWindow Window;
     public static Texture[] Textures;
+    public static Font[] Fonts;
+    
     public static void LoadTextures(params string[] filenames)
     {
         Textures = new Texture[filenames.Length];
         for (int i = 0; i < filenames.Length; i++)
         {
             Textures[i] = new Texture(filenames[i]);
+        }
+    }
+
+    public static void LoadFonts(params string[] filenames)
+    {
+        Fonts = new Font[filenames.Length];
+        for (int i = 0; i < filenames.Length; i++)
+        {
+            Fonts[i] = new Font(filenames[i]);
         }
     }
     
