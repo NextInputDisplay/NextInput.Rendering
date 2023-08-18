@@ -15,6 +15,8 @@ public struct WindowProperties
 public class Scene
 {
     private SortedList<int, Drawable> _renderList;
+
+    public Animator Animator;
     
     public float[] Values;
     public float GetV(int id) => Values[id];
@@ -35,8 +37,9 @@ public class Scene
     }
     
     
-    public Scene()
+    public Scene(Dictionary<string, Animator.ValueFunction> dict)
     {
+        Animator = new Animator(dict);
         _renderList = new SortedList<int, Drawable>();
         Init();
     }

@@ -2,53 +2,57 @@ namespace AbstractRendering;
 
 public class Handler
 {
+    public string FunctionName;
+    
     private Animator.ValueFunction _valueFunction;
-    private List<KeyFrameHandler> _keyFrameHandlers;
+    public List<KeyFrameHandler> KeyFrameHandlers;
 
-    public Handler(Animator.ValueFunction valueFunction, params KeyFrameHandler[] keyFrameHandlers)
+    public Handler(string functionName, Animator.ValueFunction valueFunction, params KeyFrameHandler[] keyFrameHandlers)
     {
+        FunctionName = functionName;
+        
         _valueFunction = valueFunction;
-        _keyFrameHandlers = new List<KeyFrameHandler>(keyFrameHandlers);
+        KeyFrameHandlers = new List<KeyFrameHandler>(keyFrameHandlers);
     }
 
     public void Update()
     {
         float value = _valueFunction();
 
-        foreach (var keyFrameHandler in _keyFrameHandlers)
+        foreach (var keyFrameHandler in KeyFrameHandlers)
         {
             keyFrameHandler.Update(value);
         }
     }
 
-    public void Add(KeyFrameHandler handler) => _keyFrameHandlers.Add(handler);
+    public void Add(KeyFrameHandler handler) => KeyFrameHandlers.Add(handler);
 }
 
 public class Animator
 {
     public delegate float ValueFunction();
 
-    private List<Handler> _handlers;
+    public List<Handler> Handlers;
+
+    private Dictionary<string, ValueFunction> _dictionary;
     
-    public Animator()
+    public Animator(Dictionary<string, ValueFunction> dict)
     {
-        _handlers = new List<Handler>();
+        _dictionary = dict;
+        Handlers = new List<Handler>();
     }
     
     public void Update()
     {
-        foreach (var handler in _handlers)
+        foreach (var handler in Handlers)
         {
             handler.Update();
         }
     }
 
-    public void Add(params Handler[] handlers)
+    public void Add(string name, params KeyFrameHandler[] keyFrameHandlers)
     {
-        foreach (var handler in handlers)
-        {
-            _handlers.Add(handler);
-        }
+        Handlers.Add(new Handler(name, _dictionary[name], keyFrameHandlers));
     }
 }
 
@@ -66,16 +70,16 @@ public class KeyFrame
 
 public class KeyFrameHandler
 {
-    private List<KeyFrame> _keyFrames;
-    private int _propertyPointer;
+    public List<KeyFrame> KeyFrames;
+    public int PropertyPointer;
 
     public KeyFrameHandler(int propertyPointer)
     {
-        _keyFrames = new List<KeyFrame>();
-        _propertyPointer = propertyPointer;
+        KeyFrames = new List<KeyFrame>();
+        PropertyPointer = propertyPointer;
     }
     
-    public void Add(float time, float value) => _keyFrames.Add(new KeyFrame(time,value));
+    public void Add(float time, float value) => KeyFrames.Add(new KeyFrame(time,value));
     
     
     private (int,float) GetLerp(float time)
@@ -83,9 +87,9 @@ public class KeyFrameHandler
         float lerp = 0f;
         int i = 0;
         
-        for (; i < _keyFrames.Count-1; i++)
+        for (; i < KeyFrames.Count-1; i++)
         {
-            float delta = _keyFrames[i + 1].Time - _keyFrames[i].Time;
+            float delta = KeyFrames[i + 1].Time - KeyFrames[i].Time;
             if (delta > time)
             {
                 lerp = time / delta;
@@ -95,7 +99,7 @@ public class KeyFrameHandler
             time -= delta;
         }
 
-        if (i == _keyFrames.Count-1)
+        if (i == KeyFrames.Count-1)
         {
             lerp = 1f;
             i--;
@@ -107,6 +111,6 @@ public class KeyFrameHandler
     public void Update(float time)
     {
         var (index, lerp) = GetLerp(time);
-        Current.Scene.Values[_propertyPointer] = _keyFrames[index].Value * (1f - lerp) + _keyFrames[index + 1].Value * lerp;
+        Current.Scene.Values[PropertyPointer] = KeyFrames[index].Value * (1f - lerp) + KeyFrames[index + 1].Value * lerp;
     }
 }
