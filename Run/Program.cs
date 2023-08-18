@@ -27,8 +27,6 @@ public class Program
         Renderer.LoadFonts("AgaveNerdFont-Regular.ttf");
         
         
-        
-        
         #region Circle
         Circle lunaCircle = new Circle();scene.Add(lunaCircle);
         lunaCircle.TextureId = 0;
@@ -71,10 +69,6 @@ public class Program
         scene.Set2V(convexShape.VertsRef+4,(350,300));
         scene.Set4V(convexShape.ColorRef,Color.Blue);
         
-        Console.WriteLine(convexShape);
-        Console.WriteLine(convexShape.StartPointer);
-        
-        
         Line line = new Line(); scene.Add(line);
         scene.Set2V(line.StartRef,(700,500));
         scene.SetV(line.WidthRef,5f);
@@ -89,8 +83,6 @@ public class Program
         lineEndY.Add(1f,600f);
         
         animator.Add(new Handler(Input.GetAdjustedLeftStickX, lineEndX),new Handler(Input.GetAdjustedLeftStickY, lineEndY));
-        
-        Console.WriteLine(line.StartPointer);
         
         
         #region Polygon

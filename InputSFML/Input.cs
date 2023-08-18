@@ -1,9 +1,21 @@
-﻿using SFML.Window;
+﻿using AbstractRendering;
+using SFML.Window;
 
 namespace InputSFML;
 
 public static class Input
 {
+    public static Dictionary<string, Animator.ValueFunction> InputFunctions = new()
+    {
+        {"RightTrigger", GetRightTrigger},
+        {"LeftStickX", GetLeftStickX},
+        {"LeftStickY", GetLeftStickY},
+        {"AdjLeftStickX", GetAdjustedLeftStickX},
+        {"AdjLeftStickY", GetAdjustedLeftStickY},
+        {"ButtonA", GetButtonA},
+        {"ButtonB", GetButtonB},
+    };
+    
     public static float GetRightTrigger()
     {
         return (Joystick.GetAxisPosition(0, Joystick.Axis.R) + 100f) / 200f;
