@@ -17,6 +17,9 @@ public class Scene
     private SortedList<int, Drawable> _renderList;
 
     public Animator Animator;
+
+    public string[] Textures;
+    public string[] Fonts;
     
     public float[] Values;
     public float GetV(int id) => Values[id];
@@ -34,6 +37,14 @@ public class Scene
         Values[id + 1] = v.y;
         Values[id + 2] = v.z;
         Values[id + 3] = v.w;
+    }
+
+    public void SetValues(int id, params float[] values)
+    {
+        for (int i = 0; i < values.Length; i++)
+        {
+            Values[id + i] = values[i];
+        }
     }
     
     
@@ -58,5 +69,11 @@ public class Scene
         _renderList.Add(layer,drawable);
     }
 
+    public void SetTextures(params string[] filenames) => Textures = filenames;
+    public void SetFonts(params string[] filenames) => Fonts = filenames;
+    
+    
+    
+    
     public IList<Drawable> ToRender => _renderList.Values;
 }

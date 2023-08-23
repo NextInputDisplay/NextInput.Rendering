@@ -145,6 +145,48 @@ public class SceneJsonSerializer : JsonConverter<Scene>
             
             scene.Animator.Add(functionName!, keyFrameHandlers.ToArray());
         }
+        
+        BadJsonGuard(read.TokenType, JsonTokenType.EndArray);
+        read.Read();
+        
+        Property(ref read,"assets");
+        StartObject(ref read);
+        #region Tetures
+        
+        Property(ref read,"textures");
+        StartArray(ref read);
+
+        List<string> textures = new List<string>();
+
+        while (read.TokenType != JsonTokenType.EndArray)
+        {
+            textures.Add(ReadString(ref read)!);
+        }
+
+        scene.SetTextures(textures.ToArray());
+        
+        read.Read();
+        #endregion
+        
+        #region Tetures
+        
+        Property(ref read,"fonts");
+        StartArray(ref read);
+
+        List<string> fonts = new List<string>();
+
+        while (read.TokenType != JsonTokenType.EndArray)
+        {
+            fonts.Add(ReadString(ref read)!);
+        }
+
+        scene.SetFonts(fonts.ToArray());
+        
+        read.Read();
+        #endregion
+        
+        EndObject(ref read);
+        
 
         read.Read();
         BadJsonGuard(read.TokenType, JsonTokenType.EndObject);
@@ -248,6 +290,31 @@ public class SceneJsonSerializer : JsonConverter<Scene>
         }
         writer.WriteEndArray();
         
+        writer.WritePropertyName("assets");
+
+        writer.WriteStartObject();
+        writer.WritePropertyName("textures");
+        
+        writer.WriteStartArray();
+        foreach (var s in value.Textures)
+        {
+            writer.WriteStringValue(s);
+        }
+        writer.WriteEndArray();
+    
+        writer.WritePropertyName("fonts");
+        
+        writer.WriteStartArray();
+        foreach (var s in value.Fonts)
+        {
+            writer.WriteStringValue(s);
+        }
+        writer.WriteEndArray();
+        
+        
+        writer.WriteEndObject();
+        
+        
         writer.WriteEndObject();
     }
     
@@ -342,12 +409,25 @@ public class SceneJsonSerializer : JsonConverter<Scene>
         BadJsonPropertyNameGuard(reader.GetString()!, name);
         reader.Read();
     }
+    
+    private string? ReadString(ref Utf8JsonReader reader)
+    {
+        string? str = ReadStringQuick(ref reader);
+        reader.Read();
+        return str;
+    }
 
     private string? ReadString(ref Utf8JsonReader reader, string title)
     {
         string? str = ReadStringQuick(ref reader, title);
         reader.Read();
         return str;
+    }
+    
+    private string? ReadStringQuick(ref Utf8JsonReader reader)
+    {
+        BadJsonGuard(reader.TokenType, JsonTokenType.String);
+        return reader.GetString();
     }
 
     private string? ReadStringQuick(ref Utf8JsonReader reader, string title)

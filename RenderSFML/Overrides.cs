@@ -149,6 +149,8 @@ public class RenderConvexShape : RenderImplementation
         {
             _sfmlShape.SetPoint((uint)i,Convert.Vec2( Renderer.Scene.Get2V(shape.VertsRef + i * 2) ));
         }
+
+        _sfmlShape.Position = Convert.Vec2(Renderer.Scene.Get2V(shape.PosRef));
         
         Implementation.ApplyProperties(_sfmlShape, shape);
         

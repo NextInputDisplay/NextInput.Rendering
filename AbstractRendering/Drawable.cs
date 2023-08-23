@@ -136,21 +136,22 @@ public class Rectangle : Shape
 public class ConvexShape : Shape
 {
     // Properties:
-    //  shape,    verts
-    //  (0..9),  (10...)
+    //  shape,  pos,       verts
+    //  (0..9), (10,11),  (12...)
     
-    public int VertsRef => StartPointer + 10;
+    public int PosRef => StartPointer + 10;
+    public int VertsRef => StartPointer + 12;
     public int NumVerts;
 
     public ConvexShape(int numVerts)
     {
-        PointerSize = 10 + numVerts *2;
+        PointerSize = 12 + numVerts *2;
         NumVerts = numVerts;
     }
 
     public override string ToString()
     {
-        string str = "{";
+        string str = ((Vec2)(Current.Scene.Get2V(PosRef))) + ", {";
         for (int i = 0; i < NumVerts-1; i++)
         {
             str += ((Vec2)(Current.Scene.Get2V(VertsRef + i * 2))) + ",";

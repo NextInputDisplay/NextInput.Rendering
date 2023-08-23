@@ -68,6 +68,15 @@ public class KeyFrame
     }
 }
 
+public class SimpleButtonKf : KeyFrameHandler
+{
+    public SimpleButtonKf(int propertyPointer, float min, float max) : base(propertyPointer)
+    {
+        Add(0f,min);
+        Add(1f,max);
+    }
+}
+
 public class KeyFrameHandler
 {
     public List<KeyFrame> KeyFrames;
