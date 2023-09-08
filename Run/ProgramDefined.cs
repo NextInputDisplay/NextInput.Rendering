@@ -606,8 +606,11 @@ public class ProgramDefined
         
         Serialize(scene, "hello.json");
         
+        Input.Init();
+        
         while (Renderer.Window.IsOpen)
         {
+            Input.Update();
             scene.Animator.Update();
             //Input.PrintButtons();
             //Input.PrintAxes();

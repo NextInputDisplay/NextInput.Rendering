@@ -1,10 +1,29 @@
 ﻿using AbstractRendering;
+using NextInput.Input;
+using NextInput.Input.SDL;
 using SFML.Window;
 
 namespace InputSFML;
 
 public static class Input
 {
+    private static IInputBackend _inputBackend;
+
+    private static IGameController _gameController;
+    
+    public static void Init()
+    {
+        InputBackendManager.RegisterInputBackend<SDLInputBackend>();
+        _inputBackend = InputBackendManager.GetInputBackend();
+
+        _gameController = _inputBackend.GetGameController(_inputBackend.GameControllers.First());
+    }
+
+    public static void Update()
+    {
+        _inputBackend.UpdateGameControllers();
+    }
+    
     public static Dictionary<string, Animator.ValueFunction> InputFunctions = new()
     {
         {"RightTrigger", GetRightTrigger},
@@ -32,7 +51,7 @@ public static class Input
         {"DpadDown", GetDpadDown},
     };
     
-    public static float GetRightTrigger() => (Joystick.GetAxisPosition(0, Joystick.Axis.R) + 100f) / 200f;
+    public static float GetRightTrigger() => _gameController.GetAxis(GameControllerAxes.TriggerRight);
     
 
     public static float GetLeftStickX() => (Joystick.GetAxisPosition(0,Joystick.Axis.X) + 100f) / 200f;
@@ -96,21 +115,21 @@ public static class Input
     }
 
 
-    public static float GetButtonA() => Joystick.IsButtonPressed(0, 0)? 1f:0f;
-    public static float GetButtonB() => Joystick.IsButtonPressed(0, 1)?1f:0f;
-    public static float GetButtonX() => Joystick.IsButtonPressed(0, 2)?1f:0f;
-    public static float GetButtonY() => Joystick.IsButtonPressed(0, 3)?1f:0f;
+    public static float GetButtonA() => _gameController.GetButton(GameControllerButtons.A) ? 1f : 0f;
+    public static float GetButtonB() => _gameController.GetButton(GameControllerButtons.B) ? 1f : 0f;
+    public static float GetButtonX() => _gameController.GetButton(GameControllerButtons.X) ? 1f : 0f;
+    public static float GetButtonY() => _gameController.GetButton(GameControllerButtons.Y) ? 1f : 0f;
     
-    public static float GetButtonStart() => Joystick.IsButtonPressed(0, 7)?1f:0f;
-    public static float GetButtonSelect() => Joystick.IsButtonPressed(0, 6)?1f:0f;
+    public static float GetButtonStart() => _gameController.GetButton(GameControllerButtons.Start) ? 1f : 0f;
+    public static float GetButtonSelect() => _gameController.GetButton(GameControllerButtons.Back) ? 1f : 0f;
     
-    public static float GetButtonL3() => Joystick.IsButtonPressed(0, 9)?1f:0f;
-    public static float GetButtonR3() => Joystick.IsButtonPressed(0, 10)?1f:0f;
+    public static float GetButtonL3() => _gameController.GetButton(GameControllerButtons.LeftStick) ? 1f : 0f;
+    public static float GetButtonR3() => _gameController.GetButton(GameControllerButtons.RightStick) ? 1f : 0f;
 
-    public static float GetButtonL() => Joystick.IsButtonPressed(0, 4) ? 1f : 0f;
-    public static float GetButtonR() => Joystick.IsButtonPressed(0, 5) ? 1f : 0f;
-    public static float GetButtonL2() => (Joystick.GetAxisPosition(0,Joystick.Axis.Z) + 100f) / 200f;
-    public static float GetButtonR2() => (Joystick.GetAxisPosition(0,Joystick.Axis.R) + 100f) / 200f;
+    public static float GetButtonL() => _gameController.GetButton(GameControllerButtons.LeftShoulder) ? 1f : 0f;
+    public static float GetButtonR() => _gameController.GetButton(GameControllerButtons.RightShoulder) ? 1f : 0f;
+    public static float GetButtonL2() => _gameController.GetAxis(GameControllerAxes.TriggerLeft);
+    public static float GetButtonR2() => _gameController.GetAxis(GameControllerAxes.TriggerRight);
     
 
     public static void PrintButtons()
@@ -122,10 +141,10 @@ public static class Input
         Console.WriteLine();
     }
 
-    public static float GetDpadRight() => Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 0 ? 1f : 0f;
-    public static float GetDpadLeft() => Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < 0 ? 1f : 0f;
-    public static float GetDpadUp() => Joystick.GetAxisPosition(0, Joystick.Axis.PovY) < 0 ? 1f : 0f;
-    public static float GetDpadDown() => Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 0 ? 1f : 0f;
+    public static float GetDpadRight() => _gameController.GetButton(GameControllerButtons.DPadRight) ? 1f : 0f;
+    public static float GetDpadLeft() => _gameController.GetButton(GameControllerButtons.DPadLeft) ? 1f : 0f;
+    public static float GetDpadUp() => _gameController.GetButton(GameControllerButtons.DPadUp) ? 1f : 0f;
+    public static float GetDpadDown() => _gameController.GetButton(GameControllerButtons.DPadDown) ? 1f : 0f;
     
     public static void PrintAxes()
     {
