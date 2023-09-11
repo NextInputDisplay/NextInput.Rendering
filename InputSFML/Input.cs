@@ -54,9 +54,12 @@ public static class Input
     public static float GetRightTrigger() => _gameController.GetAxis(GameControllerAxes.TriggerRight);
     
 
-    public static float GetLeftStickX() => (Joystick.GetAxisPosition(0,Joystick.Axis.X) + 100f) / 200f;
+    //public static float GetLeftStickX() => (Joystick.GetAxisPosition(0,Joystick.Axis.X) + 100f) / 200f;
     
-    public static float GetLeftStickY() => (Joystick.GetAxisPosition(0,Joystick.Axis.Y) + 100f) / 200f;
+    //public static float GetLeftStickY() => (Joystick.GetAxisPosition(0,Joystick.Axis.Y) + 100f) / 200f;
+    
+    public static float GetLeftStickX() => _gameController.GetAxis(GameControllerAxes.LeftX);
+    public static float GetLeftStickY() => _gameController.GetAxis(GameControllerAxes.LeftY);
     
     
     public static float GetAdjustedLeftStickX()

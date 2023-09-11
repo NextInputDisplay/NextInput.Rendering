@@ -4,7 +4,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        ProgramDefined.WiiU();
+        ProgramDefined.Testy();
         //FileDefined.Run();
     }
 }

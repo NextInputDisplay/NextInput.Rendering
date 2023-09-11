@@ -101,14 +101,15 @@ public class RenderText : RenderImplementation
 
 public class RenderCircle : RenderImplementation
 {
-    private static CircleShape _shape = new();
+    private static CircleShape _shape;
     public override void Draw(Drawable drawable)
     {
         Circle circle = (Circle)drawable;
 
+        _shape = new CircleShape(Renderer.Scene.GetV(circle.RadiusRef), (uint)Renderer.Scene.GetV(circle.RadiusRef) / 2);
+        
         _shape.Position = Convert.Vec2(Renderer.Scene.Get2V(circle.PosRef));
-        _shape.Radius = Renderer.Scene.GetV(circle.RadiusRef);
-
+        
         _shape.Origin = new Vector2f(_shape.Radius, _shape.Radius);
 
         Implementation.ApplyProperties(_shape, circle);

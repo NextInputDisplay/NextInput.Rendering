@@ -44,8 +44,8 @@ public static class Renderer
 
         Window.Closed += (_,_) => { Window.Close(); };
         
-        LoadTextures(scene.Textures);
-        LoadFonts(scene.Fonts);
+        if (scene.Textures != null) LoadTextures(scene.Textures);
+        if (scene.Fonts != null) LoadFonts(scene.Fonts);
 
         Implementation.Init();
     }

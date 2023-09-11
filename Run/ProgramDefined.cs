@@ -7,6 +7,61 @@ namespace Run;
 
 public class ProgramDefined
 {
+
+    public static void Testy()
+    {
+        Scene scene = new Scene(Input.InputFunctions);
+        scene.Values = new float[64];
+
+        WindowProperties properties = new WindowProperties()
+        {
+            Size = new Vec2(800, 800),
+            Title = "Test Stick"
+        };
+        
+        Renderer.Init(scene,properties);
+
+        Circle outline = new Circle(); scene.Add(outline);
+        scene.Set2V(outline.PosRef,(400f,400f));
+        scene.SetV(outline.RadiusRef, 200f);
+        scene.Set4V(outline.ColorRef, Color.Black);
+        scene.Set4V(outline.OutlineColorRef, Color.White);
+        scene.SetV(outline.OutlineWidthRef, 4f);
+
+        Line line = new Line(); scene.Add(line);
+        scene.Set2V(line.StartRef, (400f,400f));
+        scene.SetV(line.WidthRef, 4f);
+        scene.Set4V(line.ColorRef, Color.White);
+        
+        
+        KeyFrameHandler leftStickMoveX = new KeyFrameHandler(line.EndRef);
+        leftStickMoveX.Add(0f,200);
+        leftStickMoveX.Add(1f,600);
+        KeyFrameHandler leftStickMoveY = new KeyFrameHandler(line.EndRef+1);
+        leftStickMoveY.Add(0f,200);
+        leftStickMoveY.Add(1f,600);
+        
+        scene.Animator.Add("LeftStickX", leftStickMoveX);
+        scene.Animator.Add("LeftStickY", leftStickMoveY);
+        
+        
+        
+        Input.Init();
+        
+        while (Renderer.Window.IsOpen)
+        {
+            Input.Update();
+            scene.Animator.Update();
+            //Input.PrintButtons();
+            //Input.PrintAxes();
+
+            Renderer.Update();
+            Thread.Sleep(10);
+        }
+        
+    }
+    
+    
     public static void WiiU()
     {
         Scene scene = new Scene(Input.InputFunctions);
