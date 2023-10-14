@@ -4,7 +4,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        ProgramDefined.Testy();
-        //FileDefined.Run();
+        //ProgramDefined.Testy();
+        FileDefined.Run();
     }
 }

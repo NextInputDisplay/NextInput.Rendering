@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package AbstractRendering.Protos;
+
+enum ShapeType {
+  Line = 0;
+  Text = 1;
+  Convex = 2;
+  Circle = 3;
+  Rectangle = 4;
+  Polygon = 5;
+}
+
+message ConvexShape {
+  int32 num_verts = 1;
+  int32 texture_id = 2;
+}
+
+message CircleShape {
+  int32 texture_id = 1;
+}
+
+message PolygonShape {
+  int32 texture_id = 1;
+}
+
+message RectangleShape {
+  int32 texture_id = 1;
+}
+
+message TextShape {
+  string message = 1;
+  int32 font_id = 2;
+  bool centered = 3;
+}
+
+message LineShape {
+  // No additional fields (for now)
+}
+
+message Shape {
+  ShapeType type = 1;
+  oneof shape {
+    ConvexShape convex = 10;
+    CircleShape circle = 11;
+    RectangleShape rectangle = 12;
+    TextShape text = 13;
+    LineShape line = 14;
+    PolygonShape polygon = 15;
+  }
+}
+
+message KeyFrameData {
+  float time = 1;
+  float value = 2;
+}
+
+message KeyFrame {
+  int32 property_id = 1;
+  repeated KeyFrameData key_frame_data = 2;
+}
+
+message Animation {
+  string function_name = 1;
+  repeated KeyFrame key_frames = 2;
+}
+
+message Assets {
+  repeated string textures = 1;
+  repeated string fonts = 2;
+}
+
+message Scene {
+  repeated Shape shapes = 1;
+  repeated float values = 2;
+  repeated Animation animations = 3;
+  Assets assets = 4;
+}

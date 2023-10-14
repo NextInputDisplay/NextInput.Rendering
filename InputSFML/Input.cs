@@ -16,7 +16,14 @@ public static class Input
         InputBackendManager.RegisterInputBackend<SDLInputBackend>();
         _inputBackend = InputBackendManager.GetInputBackend();
 
-        _gameController = _inputBackend.GetGameController(_inputBackend.GameControllers.First());
+        try
+        {
+            _gameController = _inputBackend.GetGameController(_inputBackend.GameControllers.First());
+        }
+        catch
+        {
+            throw new Exception("No controller connected (probably)");
+        }
     }
 
     public static void Update()
