@@ -71,8 +71,8 @@ public static class Input
     
     public static float GetAdjustedLeftStickX()
     {
-        float x = Joystick.GetAxisPosition(0, Joystick.Axis.X) / 100f;
-        float y = Joystick.GetAxisPosition(0, Joystick.Axis.Y) / 100f;
+        float x = _gameController.GetAxis(GameControllerAxes.LeftX) * 2 - 1;
+        float y = _gameController.GetAxis(GameControllerAxes.LeftY) * 2 - 1;
 
         float l = x * x + y * y;
         if (l > 1f)
@@ -84,8 +84,8 @@ public static class Input
     }
     public static float GetAdjustedLeftStickY()
     {
-        float x = Joystick.GetAxisPosition(0, Joystick.Axis.X) / 100f;
-        float y = Joystick.GetAxisPosition(0, Joystick.Axis.Y) / 100f;
+        float x = _gameController.GetAxis(GameControllerAxes.LeftX) * 2 - 1;
+        float y = _gameController.GetAxis(GameControllerAxes.LeftY) * 2 - 1;
 
         float l = x * x + y * y;
         if (l > 1f)
@@ -99,8 +99,8 @@ public static class Input
     
     public static float GetAdjustedRightStickX()
     {
-        float x = Joystick.GetAxisPosition(0, Joystick.Axis.U) / 100f;
-        float y = Joystick.GetAxisPosition(0, Joystick.Axis.V) / 100f;
+        float x = _gameController.GetAxis(GameControllerAxes.RightX) * 2 - 1;
+        float y = _gameController.GetAxis(GameControllerAxes.RightY) * 2 - 1;
 
         float l = x * x + y * y;
         if (l > 1f)
@@ -112,8 +112,8 @@ public static class Input
     }
     public static float GetAdjustedRightStickY()
     {
-        float x = Joystick.GetAxisPosition(0, Joystick.Axis.U) / 100f;
-        float y = Joystick.GetAxisPosition(0, Joystick.Axis.V) / 100f;
+        float x = _gameController.GetAxis(GameControllerAxes.RightX) * 2 - 1;
+        float y = _gameController.GetAxis(GameControllerAxes.RightY) * 2 - 1;
 
         float l = x * x + y * y;
         if (l > 1f)
