@@ -30,7 +30,7 @@ public static class Implementation
         else
         {
             sfmlShape.Texture = Renderer.Textures[shape.TextureId];
-            //shape.TextureRect = new IntRect(0, 0, 303, 188);
+            sfmlShape.TextureRect = new IntRect(0, 0, (int)sfmlShape.Texture.Size.X, (int)sfmlShape.Texture.Size.Y);
         }
         
         sfmlShape.OutlineColor = Convert.Color(Renderer.Scene.Get4V(shape.OutlineColorRef));
