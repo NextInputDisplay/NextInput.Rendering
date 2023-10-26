@@ -30,7 +30,12 @@ public static class Implementation
         else
         {
             sfmlShape.Texture = Renderer.Textures[shape.TextureId];
-            sfmlShape.TextureRect = new IntRect(0, 0, (int)sfmlShape.Texture.Size.X, (int)sfmlShape.Texture.Size.Y);
+            
+            // FIXME: This is a giant hack so that we can make rectangle with textures disappear as we want
+            if (Renderer.Scene.GetV(shape.ColorRef + 4) == 0.0)
+                sfmlShape.TextureRect = new IntRect(0, 0, (int)sfmlShape.Texture.Size.X, (int)sfmlShape.Texture.Size.Y);
+            else
+                sfmlShape.TextureRect = new IntRect(0, 0, 0, 0);
         }
         
         sfmlShape.OutlineColor = Convert.Color(Renderer.Scene.Get4V(shape.OutlineColorRef));
