@@ -4,7 +4,8 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        NextControllerInputDisplay.Run();
         //ProgramDefined.Testy();
-        FileDefined.Run();
+        //FileDefined.Run();
     }
 }

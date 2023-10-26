@@ -14,6 +14,12 @@
     </ItemGroup>
     
     <ItemGroup>
+        <Content Include=".\ncid-assets\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    
+    <ItemGroup>
       <PackageReference Include="Google.Protobuf" Version="3.24.4" />
       <PackageReference Include="SFML.Net" Version="2.5.1" />
     </ItemGroup>
