@@ -52,8 +52,14 @@ public static class NextControllerInputDisplay
 
     private static Scene scene;
     
-    public static void Run()
+    public static void Run(bool saveScene = false)
     {
+        if (saveScene)
+        {
+            SceneJsonSerializer.InputFunctions = Input.InputFunctions;
+            SceneMapper.InputFunctions = Input.InputFunctions;
+        }
+        
         scene = new Scene(Input.InputFunctions);
         scene.Values = new float[1024];
 
@@ -64,6 +70,8 @@ public static class NextControllerInputDisplay
         };
 
         scene.SetTextures(_assets.Select(x => x.Path).ToArray());
+        if (saveScene)
+            scene.SetFonts(Array.Empty<string>());
         
         Renderer.Init(scene, properties);
         
@@ -209,6 +217,9 @@ public static class NextControllerInputDisplay
         
         scene.Animator.Add("AdjLeftStickX", leftStickMoveX, leftStickMoveXTip, leftStickMoveXTip2);
         scene.Animator.Add("AdjLeftStickY", leftStickMoveY, leftStickMoveYTip, leftStickMoveYTip2);
+        
+        if (saveScene)
+            ProgramDefined.Serialize(scene, "ncid.json");
         
         Input.Init();
         
